@@ -1,5 +1,7 @@
 (ns quilt.core
-  (:require [quilt.config :as config]
+  (:require [quil.core :as q :include-macros true]
+            [quil.middleware :as q.middleware]
+            [quilt.config :as config]
             [quilt.events]
             [quilt.subs]
             [quilt.views :as views]
@@ -16,7 +18,22 @@
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
 
+(defn- quil-setup []
+  {})
+
+(defn- quil-update [state]
+  state)
+
+(defn- quil-draw! [state])
+
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
-  (mount-root))
+  (mount-root)
+  (q/defsketch sketch
+  :host "sketch"
+  :size [640 480]
+  :setup quil-setup
+  :update quil-update
+  :draw quil-draw!
+  :middleware [q.middleware/fun-mode]))
