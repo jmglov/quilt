@@ -57,3 +57,8 @@
         (-> canvas-id
             dom/getElement
             q.sketch/destroy-previous-sketch))}]))
+
+(defn- setup []
+  {})
+
+(defn- draw! [])
