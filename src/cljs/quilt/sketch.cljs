@@ -7,10 +7,28 @@
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
 
-(defn- setup []
-  {})
+(defn- clear! [[r g b]]
+  (q/background r g b))
 
-(defn- draw! [])
+(defn draw-text! [text [x y] size]
+  (q/text-size size)
+  (q/text text x y))
+
+(defn set-color! [[r g b]]
+  (q/fill r g b)
+  (q/stroke r g b))
+
+(defn- setup [sketch-atom]
+  (println "Setting up sketch")
+  (clear! (:bg-color @sketch-atom))
+  (q/frame-rate 1))
+
+(defn- draw! [sketch-atom code-atom]
+  (doseq [{:keys [fun] :as c} @code-atom]
+    (case fun
+      :clear (clear! (:bg-color @sketch-atom))
+      :color (set-color! (:color c))
+      :text (draw-text! (:text c) (:position c) (:size c)))))
 
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
 
@@ -30,11 +48,12 @@
   ;;     canvas id at compile time.
   ;;     But no -- the same call site can create multiple sketches.
   []
-  (let [sketch-atom (re-frame/subscribe [:sketch])
+  (let [code-atom (re-frame/subscribe [:code])
+        sketch-atom (re-frame/subscribe [:sketch])
         sketch-args {:host (:name @sketch-atom)
                      :size (:size @sketch-atom)
-                     :setup setup
-                     :draw draw!}
+                     :setup (partial setup sketch-atom)
+                     :draw (partial draw! sketch-atom code-atom)}
         size (:size sketch-args)
         _ (assert (or (nil? size)
                       (and (vector? size)
