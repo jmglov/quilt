@@ -3,8 +3,14 @@
             [goog.dom :as dom]
             [quil.core :as q :include-macros true]
             [quil.sketch :as q.sketch]
+            [re-frame.core :as re-frame]
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
+
+(defn- setup []
+  {})
+
+(defn- draw! [])
 
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
 
@@ -23,8 +29,13 @@
   ;; (2) You might think this could be done with a macro that creates the
   ;;     canvas id at compile time.
   ;;     But no -- the same call site can create multiple sketches.
-  [& {:as sketch-args}]
-  (let [size (:size sketch-args)
+  []
+  (let [sketch-atom (re-frame/subscribe [:sketch])
+        sketch-args {:host (:name @sketch-atom)
+                     :size (:size @sketch-atom)
+                     :setup setup
+                     :draw draw!}
+        size (:size sketch-args)
         _ (assert (or (nil? size)
                       (and (vector? size)
                            (= (count size) 2)))
@@ -57,8 +68,3 @@
         (-> canvas-id
             dom/getElement
             q.sketch/destroy-previous-sketch))}]))
-
-(defn- setup []
-  {})
-
-(defn- draw! [])
