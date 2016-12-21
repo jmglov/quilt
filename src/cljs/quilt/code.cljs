@@ -12,6 +12,6 @@
   (merge {:fun fun}
          (case fun
            :clear {}
-           :color {:color [0 0 0]}
+           :color {:color :black}
            :circle {:position [0 0], :radius 0}
            :text {:text "", :position [0 0], :size 24})))

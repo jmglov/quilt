@@ -2,12 +2,10 @@
   (:require [cljs.pprint :refer [pprint]]
             [quilt.code :refer [create-form]]
             [quilt.sketch :as sketch :refer [sketch]]
+            [quilt.util :refer [concatv get-value]]
             [quilt.views.code :as code]
             [re-frame.core :as rf]
             [reagent.core :as r]))
-
-(defn- concatv [& vs]
-  (into [] (apply concat vs)))
 
 (defn- forms []
   (let [code (rf/subscribe [:code])]
@@ -17,8 +15,7 @@
 
 (defn- new-form []
   (let [new-fun (r/atom :clear)
-        add-code #(rf/dispatch [:add-code (create-form @new-fun)])
-        get-value #(-> % .-target .-value)]
+        add-code #(rf/dispatch [:add-code (create-form @new-fun)])]
     (fn []
       [:div
        [:select

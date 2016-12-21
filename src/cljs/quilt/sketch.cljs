@@ -3,6 +3,7 @@
             [goog.dom :as dom]
             [quil.core :as q :include-macros true]
             [quil.sketch :as q.sketch]
+            [quilt.color :refer [color]]
             [re-frame.core :as re-frame]
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
@@ -19,12 +20,12 @@
   (q/text-align :center :center)
   (q/text text x y))
 
-(defn set-color! [[r g b]]
-  (q/fill r g b)
-  (q/stroke r g b))
+(defn set-color! [c]
+  (let [[r g b] (color c)]
+    (q/fill r g b)
+    (q/stroke r g b)))
 
 (defn- setup [sketch-atom]
-  (println "Setting up sketch")
   (clear! (:bg-color @sketch-atom))
   (q/frame-rate 1))
 
