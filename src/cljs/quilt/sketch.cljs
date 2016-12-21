@@ -12,6 +12,7 @@
 
 (defn draw-text! [text [x y] size]
   (q/text-size size)
+  (q/text-align :center :center)
   (q/text text x y))
 
 (defn set-color! [[r g b]]

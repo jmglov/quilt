@@ -29,11 +29,4 @@
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
   (dev-setup)
-  (mount-root)
-  #_(q/defsketch sketch
-      :host "sketch"
-      :size [640 480]
-      :setup quil-setup
-      :update quil-update
-      :draw quil-draw!
-      :middleware [q.middleware/fun-mode]))
+  (mount-root))
