@@ -19,7 +19,7 @@
                     (map code/render @code)
                     [[:div
                       [:input {:type "text"
-                               :size "64"
+                               :size "100"
                                :value @new-form
                                :on-change #(reset! new-form (get-value %))
                                :on-key-press (fn [e]
