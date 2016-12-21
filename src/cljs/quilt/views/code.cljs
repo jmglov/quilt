@@ -29,7 +29,6 @@
    (input-num 3 form [:color 2]) "])"])
 
 (defn- render-text [form]
-  (println "Rendering text form:" form)
   [:div
    "(text "
    (input-text 64 form [:text]) " "

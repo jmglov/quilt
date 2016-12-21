@@ -40,8 +40,11 @@
 
 (defn main-panel []
   (fn []
-    [:div
+    [:div.container
      [sketch]
-     [forms]
-     [new-form]
-     [code-list]]))
+     [:div#editor
+      [:h2 "Code"]
+      [forms]
+      [new-form]
+      [:h2 "Debug"]
+      [code-list]]]))

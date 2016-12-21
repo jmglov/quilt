@@ -1,0 +1,14 @@
+.container {
+    display: flex;
+}
+
+#editor {
+    flex-grow: 1;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#editor > div {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
