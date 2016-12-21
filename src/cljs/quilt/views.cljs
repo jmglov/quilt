@@ -26,7 +26,8 @@
          :on-change #(reset! new-fun (keyword (get-value %)))}
         [:option "clear"]
         [:option "color"]
-        [:option "text"]]
+        [:option "text"]
+        [:option "circle"]]
        [:button {:on-click add-code}
         "Add"]])))
 

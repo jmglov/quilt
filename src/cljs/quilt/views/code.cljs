@@ -21,6 +21,13 @@
 (defn- input-text [size form path]
   (input-assoc size form path identity ""))
 
+(defn- render-circle [form]
+  [:div
+   "(circle "
+   "[" (input-num 3 form [:position 0]) " "
+   (input-num 3 form [:position 1]) "] "
+   (input-num 3 form [:radius]) ")"])
+
 (defn- render-color [form]
   [:div
    "(color "
@@ -38,6 +45,7 @@
 
 (defn render [{:keys [fun] :as form}]
   (case fun
+    :circle (render-circle form)
     :clear [:div "(clear)"]
     :color (render-color form)
     :text (render-text form)

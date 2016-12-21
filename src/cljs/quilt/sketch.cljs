@@ -10,6 +10,10 @@
 (defn- clear! [[r g b]]
   (q/background r g b))
 
+(defn draw-circle! [[x y] radius]
+  (let [circumference (* 2 radius)]
+    (q/ellipse x y circumference circumference)))
+
 (defn draw-text! [text [x y] size]
   (q/text-size size)
   (q/text-align :center :center)
@@ -27,9 +31,11 @@
 (defn- draw! [sketch-atom code-atom]
   (doseq [{:keys [fun] :as c} @code-atom]
     (case fun
+      :circle (draw-circle! (:position c) (:radius c))
       :clear (clear! (:bg-color @sketch-atom))
       :color (set-color! (:color c))
-      :text (draw-text! (:text c) (:position c) (:size c)))))
+      :text (draw-text! (:text c) (:position c) (:size c))
+      nil)))
 
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
 
