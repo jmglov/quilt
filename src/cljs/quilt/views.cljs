@@ -18,10 +18,13 @@
                     (map (fn [c] [:div (with-out-str (pprint c))])
                          @code)
                     [[:div
-                       [:input {:type "text"
-                                :value @new-form
-                                :on-change #(reset! new-form (get-value %))}]
-                       [:button {:on-click add-code} "Add"]]])))))
+                      [:input {:type "text"
+                               :size "64"
+                               :value @new-form
+                               :on-change #(reset! new-form (get-value %))
+                               :on-key-press (fn [e]
+                                               (when (= 13 (.-charCode e))
+                                                 (add-code)))}]]])))))
 
 (defn main-panel []
   (fn []
