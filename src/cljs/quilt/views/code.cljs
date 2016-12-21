@@ -13,7 +13,7 @@
            :size size
            :maxLength size
            :value (str (get-in form path))
-           :on-change #(let [new-value (get-value %)]
+           :on-change #(let [new-value (get-value % tx default)]
                          (replace-code (assoc-in form path new-value)))}])
 
 (defn- input-num [size form path]
