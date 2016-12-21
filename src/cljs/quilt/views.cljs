@@ -1,6 +1,7 @@
 (ns quilt.views
   (:require [cljs.pprint :refer [pprint]]
             [cljs.reader :refer [read-string]]
+            [quilt.views.code :as code]
             [quilt.sketch :as sketch :refer [sketch]]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -15,8 +16,7 @@
     (fn []
       (into []
             (concat [:div [:h2 "Code"]]
-                    (map (fn [c] [:div (with-out-str (pprint c))])
-                         @code)
+                    (map code/render @code)
                     [[:div
                       [:input {:type "text"
                                :size "64"

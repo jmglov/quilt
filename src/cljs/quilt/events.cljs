@@ -11,5 +11,9 @@
 (re-frame/reg-event-db
  :add-code
  (fn [db [_ form]]
-   (println "Adding code:" form)
    (update db :code code/add form)))
+
+(re-frame/reg-event-db
+ :replace-code
+ (fn [db [_ form]]
+   (update db :code code/replace form)))
