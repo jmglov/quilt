@@ -14,6 +14,11 @@
    (update db :code code/add form)))
 
 (re-frame/reg-event-db
+ :clear-code
+ (fn [db [_ form]]
+   (assoc db :code [])))
+
+(re-frame/reg-event-db
  :replace-code
  (fn [db [_ form]]
    (update db :code code/replace form)))

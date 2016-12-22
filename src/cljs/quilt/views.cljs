@@ -10,28 +10,30 @@
 (defn- forms []
   (let [code (rf/subscribe [:code])]
     (fn []
-      (concatv [:div]
+      (concatv [:div.outlined]
                (mapv code/render @code)))))
 
-(defn- new-form []
+(defn- modify-forms []
   (let [new-fun (r/atom :clear)
-        add-code #(rf/dispatch [:add-code (create-form @new-fun)])]
+        add-code #(rf/dispatch [:add-code (create-form @new-fun)])
+        clear-code #(rf/dispatch [:clear-code])]
     (fn []
-      [:div
-       [:select
-        {:value (name @new-fun)
-         :on-change #(reset! new-fun (keyword (get-value %)))}
-        [:option "clear"]
-        [:option "color"]
-        [:option "text"]
-        [:option "circle"]]
-       [:button {:on-click add-code}
-        "Add"]])))
+      [:div#modify-forms.container
+       [:div.outlined
+        [:select
+         {:value (name @new-fun)
+          :on-change #(reset! new-fun (keyword (get-value %)))}
+         [:option "clear"]
+         [:option "color"]
+         [:option "text"]
+         [:option "circle"]]
+        [:button {:on-click add-code} "Add"]]
+       [:button {:on-click clear-code} "Delete all"]])))
 
 (defn- code-list []
   (let [code (rf/subscribe [:code])]
     (fn []
-      (concatv [:div]
+      (concatv [:div.outlined]
                (mapv (fn [c]
                        [:div (with-out-str (pprint c))])
                      @code)))))
@@ -43,6 +45,6 @@
      [:div#editor
       [:h2 "Code"]
       [forms]
-      [new-form]
+      [modify-forms]
       [:h2 "Debug"]
       [code-list]]]))

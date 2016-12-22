@@ -12,3 +12,19 @@
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.outlined {
+    outline: black solid thin;
+}
+
+#modify-forms > .outlined {
+    margin-right: 10px;
+}
+
+#modify-forms > div {
+    padding: 5px 5px 5px 5px;
+}
+
+#modify-forms > div > button {
+    margin-left: 10px;
+}
