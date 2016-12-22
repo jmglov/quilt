@@ -1,42 +1,40 @@
 (ns quilt.views
   (:require [cljs.pprint :refer [pprint]]
-            [quilt.code :refer [create-form]]
+            [quilt.code :as code]
             [quilt.sketch :as sketch :refer [sketch]]
             [quilt.util :refer [concatv get-value]]
-            [quilt.views.code :as code]
+            [quilt.views.code :as views.code]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
 (defn- forms []
-  (let [code (rf/subscribe [:code])]
+  (let [code-atom (rf/subscribe [:code])]
     (fn []
       (concatv [:div.outlined]
-               (mapv code/render @code)))))
+               (mapv views.code/render @code-atom)))))
 
 (defn- modify-forms []
-  (let [new-fun (r/atom :clear)
-        add-code #(rf/dispatch [:add-code (create-form @new-fun)])
+  (let [new-fun (r/atom (first code/functions))
+        add-code #(rf/dispatch [:add-code (code/create-form @new-fun)])
         clear-code #(rf/dispatch [:clear-code])]
     (fn []
       [:div#modify-forms.container
        [:div.outlined
-        [:select
-         {:value (name @new-fun)
-          :on-change #(reset! new-fun (keyword (get-value %)))}
-         [:option "clear"]
-         [:option "color"]
-         [:option "text"]
-         [:option "circle"]]
+        (concatv
+         [:select
+          {:value (name @new-fun)
+           :on-change #(reset! new-fun (keyword (get-value %)))}]
+         (map (fn [fun] [:option (name fun)]) code/functions))
         [:button {:on-click add-code} "Add"]]
        [:button {:on-click clear-code} "Delete all"]])))
 
 (defn- code-list []
-  (let [code (rf/subscribe [:code])]
+  (let [code-atom (rf/subscribe [:code])]
     (fn []
       (concatv [:div.outlined]
                (mapv (fn [c]
                        [:div (with-out-str (pprint c))])
-                     @code)))))
+                     @code-atom)))))
 
 (defn main-panel []
   (fn []

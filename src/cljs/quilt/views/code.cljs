@@ -55,7 +55,6 @@
 (defn render [{:keys [fun] :as form}]
   (case fun
     :circle (render-circle form)
-    :clear [:div "(clear)"]
     :color (render-color form)
     :text (render-text form)
     [:div (pr-str form)]))
