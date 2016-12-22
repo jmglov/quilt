@@ -5,6 +5,9 @@
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
+(defn- delete-code [form]
+  (rf/dispatch [:delete-code form]))
+
 (defn- replace-code [form]
   (rf/dispatch [:replace-code form]))
 
@@ -32,29 +35,27 @@
         (keys color))))
 
 (defn- render-circle [form]
-  [:div
-   "(circle "
+  ["(circle "
    "[" (input-num 3 form [:position 0]) " "
    (input-num 3 form [:position 1]) "] "
    (input-num 3 form [:radius]) ")"])
 
 (defn- render-color [form]
-  [:div
-   "(color "
+  ["(color "
    (color-picker form)
    ")"])
 
 (defn- render-text [form]
-  [:div
-   "(text "
+  ["(text "
    (input-text 64 form [:text]) " "
    "[" (input-num 3 form [:position 0]) " "
    (input-num 3 form [:position 1]) "] "
    (input-num 2 form [:size]) ")"])
 
 (defn render [{:keys [fun] :as form}]
-  (case fun
-    :circle (render-circle form)
-    :color (render-color form)
-    :text (render-text form)
-    [:div (pr-str form)]))
+  (concatv [:div.form]
+           (case fun
+             :circle (render-circle form)
+             :color (render-color form)
+             :text (render-text form))
+           [[:button {:on-click #(delete-code form)} "Delete"]]))

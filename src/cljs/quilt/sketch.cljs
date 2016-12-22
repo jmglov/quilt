@@ -21,19 +21,24 @@
   (q/text text x y))
 
 (defn set-color! [c]
-  (let [[r g b] (color c)]
+  (let [[r g b] (if (keyword? c) (color c) c)]
     (q/fill r g b)
     (q/stroke r g b)))
 
 (defn- setup [sketch-atom]
-  (clear! (:bg-color @sketch-atom))
-  (q/frame-rate 1))
+  (let [{:keys [bg-color fg-color]} @sketch-atom]
+    (println "Setting up sketch")
+    (println "Background color:" bg-color)
+    (println "Foreground color:" fg-color)
+    (clear! bg-color)
+    (set-color! fg-color)
+    (q/frame-rate 1)))
 
 (defn- draw! [sketch-atom code-atom]
+  (clear! (:bg-color @sketch-atom))
   (doseq [{:keys [fun] :as c} @code-atom]
     (case fun
       :circle (draw-circle! (:position c) (:radius c))
-      :clear (clear! (:bg-color @sketch-atom))
       :color (set-color! (:color c))
       :text (draw-text! (:text c) (:position c) (:size c))
       nil)))
@@ -87,6 +92,7 @@
         ;; (Needed on initial render; not on
         ;; re-render.)
         (a/go
+          (println "Attaching sketch")
           (apply q/sketch
                  (apply concat sketch-args))))
 

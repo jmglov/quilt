@@ -28,3 +28,12 @@
 #modify-forms > div > button {
     margin-left: 10px;
 }
+
+.form {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.form > button {
+    margin-left: 10px;
+}

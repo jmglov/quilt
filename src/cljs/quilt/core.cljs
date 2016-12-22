@@ -9,7 +9,7 @@
             [reagent.core :as reagent]))
 
 (defn dev-setup []
-  (when config/debug?
+  (when true
     (enable-console-print!)
     (println "dev mode")))
 

@@ -9,6 +9,11 @@
   (let [form (assoc form :index (count code))]
     (conj code form)))
 
+(defn delete [code {:keys [index]}]
+  (->> code
+       (remove #(= index (:index %)))
+       (into [])))
+
 (defn replace [code {:keys [index] :as form}]
   (assoc code index form))
 
