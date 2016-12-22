@@ -1,5 +1,7 @@
 (ns quilt.color)
 
+(def default :black)
+
 (def color
   {:black [0 0 0]
    :blue [0 0 255]

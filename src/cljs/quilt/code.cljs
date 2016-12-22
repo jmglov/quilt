@@ -1,8 +1,8 @@
 (ns quilt.code
+  (:require [quilt.color :as color])
   (:refer-clojure :exclude [replace]))
 
 (def functions [:circle
-                :color
                 :text])
 
 (defn add [code form]
@@ -20,6 +20,5 @@
 (defn create-form [fun]
   (merge {:fun fun}
          (case fun
-           :color {:color :black}
-           :circle {:position [0 0], :radius 0}
-           :text {:text "", :position [0 0], :size 24})))
+           :circle {:position [0 0], :radius 0, :color color/default}
+           :text {:text "", :position [0 0], :size 24, :color color/default})))

@@ -38,7 +38,8 @@
   ["(circle "
    "[" (input-num 3 form [:position 0]) " "
    (input-num 3 form [:position 1]) "] "
-   (input-num 3 form [:radius]) ")"])
+   (input-num 3 form [:radius]) " "
+   (color-picker form) ")"])
 
 (defn- render-color [form]
   ["(color "
@@ -47,10 +48,11 @@
 
 (defn- render-text [form]
   ["(text "
-   (input-text 64 form [:text]) " "
+   (input-text 30 form [:text]) " "
    "[" (input-num 3 form [:position 0]) " "
    (input-num 3 form [:position 1]) "] "
-   (input-num 2 form [:size]) ")"])
+   (input-num 2 form [:size]) " "
+   (color-picker form) ")"])
 
 (defn render [{:keys [fun] :as form}]
   (concatv [:div.form]

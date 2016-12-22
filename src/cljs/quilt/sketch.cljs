@@ -11,19 +11,21 @@
 (defn- clear! [[r g b]]
   (q/background r g b))
 
-(defn draw-circle! [[x y] radius]
-  (let [circumference (* 2 radius)]
-    (q/ellipse x y circumference circumference)))
-
-(defn draw-text! [text [x y] size]
-  (q/text-size size)
-  (q/text-align :center :center)
-  (q/text text x y))
-
 (defn set-color! [c]
   (let [[r g b] (if (keyword? c) (color c) c)]
     (q/fill r g b)
     (q/stroke r g b)))
+
+(defn draw-circle! [[x y] radius color]
+  (set-color! color)
+  (let [circumference (* 2 radius)]
+    (q/ellipse x y circumference circumference)))
+
+(defn draw-text! [text [x y] size color]
+  (set-color! color)
+  (q/text-size size)
+  (q/text-align :center :center)
+  (q/text text x y))
 
 (defn- setup [sketch-atom]
   (let [{:keys [bg-color fg-color]} @sketch-atom]
@@ -36,11 +38,10 @@
 
 (defn- draw! [sketch-atom code-atom]
   (clear! (:bg-color @sketch-atom))
-  (doseq [{:keys [fun] :as c} @code-atom]
+  (doseq [{:keys [fun color] :as form} @code-atom]
     (case fun
-      :circle (draw-circle! (:position c) (:radius c))
-      :color (set-color! (:color c))
-      :text (draw-text! (:text c) (:position c) (:size c))
+      :circle (draw-circle! (:position form) (:radius form) color)
+      :text (draw-text! (:text form) (:position form) (:size form) color)
       nil)))
 
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
