@@ -10,7 +10,7 @@
 (defn- forms []
   (let [code-atom (rf/subscribe [:code])]
     (fn []
-      (concatv [:div.outlined]
+      (concatv [:div#forms.outlined]
                (mapv views.code/render @code-atom)))))
 
 (defn- modify-forms []

@@ -13,6 +13,10 @@
     padding-bottom: 10px;
 }
 
+#forms {
+    width: 100%;
+}
+
 .outlined {
     outline: black solid thin;
 }
@@ -30,10 +34,9 @@
 }
 
 .form {
-    padding-left: 5px;
-    padding-right: 5px;
+    padding: 5px 5px 5px 5px;
 }
 
 .form > button {
-    margin-left: 10px;
+    float: right;
 }
