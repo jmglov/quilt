@@ -3,6 +3,7 @@
   (:refer-clojure :exclude [replace]))
 
 (def functions [:circle
+                :curve
                 :text])
 
 (defn add [code form]
@@ -18,7 +19,14 @@
   (assoc code index form))
 
 (defn create-form [fun]
-  (merge {:fun fun}
+  (merge {:fun fun
+          :color color/default}
          (case fun
-           :circle {:position [0 0], :radius 0, :color color/default}
-           :text {:text "", :position [0 0], :size 24, :color color/default})))
+           :circle {:position [0 0]
+                    :radius 0}
+           :curve {:position [[0 0] [0 0]]
+                   :control [[0 0] [0 0]]
+                   :thickness 10}
+           :text {:text ""
+                  :position [0 0]
+                  :size 24})))

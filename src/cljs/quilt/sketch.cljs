@@ -3,7 +3,7 @@
             [goog.dom :as dom]
             [quil.core :as q :include-macros true]
             [quil.sketch :as q.sketch]
-            [quilt.color :refer [color]]
+            [quilt.color :as q.color]
             [re-frame.core :as re-frame]
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
@@ -12,7 +12,7 @@
   (q/background r g b))
 
 (defn set-color! [c]
-  (let [[r g b] (if (keyword? c) (color c) c)]
+  (let [[r g b] (if (keyword? c) (q.color/color c) c)]
     (q/fill r g b)
     (q/stroke r g b)))
 
@@ -20,6 +20,14 @@
   (set-color! color)
   (let [circumference (* 2 radius)]
     (q/ellipse x y circumference circumference)))
+
+(defn draw-curve!
+  [[[x1 y1] [x2 y2]] [[cx1 cy1] [cx2 cy2]] thickness color]
+  (q/no-fill)
+  (q/stroke-weight thickness)
+  (apply q/stroke (q.color/color color))
+  (q/curve cx1 cy1 x1 y1 x2 y2 cx2 cy2)
+  (q/fill :black))
 
 (defn draw-text! [text [x y] size color]
   (set-color! color)
@@ -41,6 +49,7 @@
   (doseq [{:keys [fun color] :as form} @code-atom]
     (case fun
       :circle (draw-circle! (:position form) (:radius form) color)
+      :curve (draw-curve! (:position form) (:control form) (:thickness form) color)
       :text (draw-text! (:text form) (:position form) (:size form) color)
       nil)))
 

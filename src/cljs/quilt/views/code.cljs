@@ -41,10 +41,18 @@
    (input-num 3 form [:radius]) " "
    (color-picker form) ")"])
 
-(defn- render-color [form]
-  ["(color "
-   (color-picker form)
-   ")"])
+(defn- render-curve [form]
+  ["(curve "
+   "[[" (input-num 3 form [:position 0 0]) " "
+   (input-num 3 form [:position 0 1]) "] ["
+   (input-num 3 form [:position 1 0]) " "
+   (input-num 3 form [:position 1 1]) "]] [["
+   (input-num 3 form [:control 0 0]) " "
+   (input-num 3 form [:control 0 1]) "] ["
+   (input-num 3 form [:control 1 0]) " "
+   (input-num 3 form [:control 1 1]) "]] "
+   (input-num 2 form [:thickness]) " "
+   (color-picker form) ")"])
 
 (defn- render-text [form]
   ["(text "
@@ -58,6 +66,6 @@
   (concatv [:div.form]
            (case fun
              :circle (render-circle form)
-             :color (render-color form)
+             :curve (render-curve form)
              :text (render-text form))
            [[:button {:on-click #(delete-code form)} "Delete"]]))
