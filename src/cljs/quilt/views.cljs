@@ -43,7 +43,8 @@
                      :on-change #(reset! source (get-value %))}]
          [:div.container
           [:button {:on-click eval-code} "Eval"]
-          [:button {:on-click clear-code} "Clear"]]]))))
+          [:button {:on-click #(do (reset! source "") clear-code)}
+           "Clear"]]]))))
 
 (defn- editor-options []
   (let [editor-atom (rf/subscribe [:editor])

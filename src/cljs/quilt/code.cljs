@@ -70,22 +70,23 @@
        (string/join "\n")))
 
 (defn- read-line [line]
-  (let [[fun & args] (read-string line)
-        fun (keyword fun)
-        params (concat [:position]
-                       (case fun
-                         :circle [:radius]
-                         :curve [:orientation :thickness]
-                         :text [:text :size]
-                         nil)
-                       [:color])]
-    (->> (interleave params args)
-         (apply hash-map)
-         (merge {:fun fun}))))
+  (when-let [[fun & args] (read-string line)]
+    (let [fun (keyword fun)
+          params (concat [:position]
+                         (case fun
+                           :circle [:radius]
+                           :curve [:orientation :thickness]
+                           :text [:text :size]
+                           nil)
+                         [:color])]
+      (->> (interleave params args)
+           (apply hash-map)
+           (merge {:fun fun})))))
 
 (defn read [source]
   (let [code (->> (string/split-lines source)
                   (map read-line)
+                  (remove nil?)
                   (into []))]
     (println "Read code:" code)
     code))
