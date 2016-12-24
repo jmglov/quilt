@@ -11,7 +11,7 @@
 (re-frame/reg-event-db
  :add-code
  (fn [db [_ form]]
-   (update db :code code/add form)))
+   (update db :code code/add-form form)))
 
 (re-frame/reg-event-db
  :clear-code
@@ -22,6 +22,11 @@
  :delete-code
  (fn [db [_ form]]
    (update db :code code/delete form)))
+
+(re-frame/reg-event-db
+ :eval-code
+ (fn [db [_ source]]
+   (assoc db :code (code/add-forms [] (code/read source)))))
 
 (re-frame/reg-event-db
  :replace-code

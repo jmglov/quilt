@@ -63,9 +63,9 @@
 
 (defn- render-text [form]
   ["(text "
-   (input-text 30 form [:text]) " "
    "[" (input-num 3 form [:position 0]) " "
    (input-num 3 form [:position 1]) "] "
+   (input-text 30 form [:text]) " "
    (input-num 2 form [:size]) " "
    (color-picker form) ")"])
 
