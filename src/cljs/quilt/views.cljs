@@ -2,6 +2,7 @@
   (:require [cljs.pprint :refer [pprint]]
             [clojure.string :as string]
             [quilt.code :as code]
+            [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
             [quilt.util :refer [concatv get-value]]
             [quilt.views.code :as views.code]
@@ -65,6 +66,20 @@
                  :on-change #(rf/dispatch [:toggle-debug])}]
         "Show debug?"]])))
 
+(defn- library []
+  (let [sketch-name (r/atom (first (keys library/sketches)))
+        set-sketch #(reset! sketch-name (keyword (get-value %)))]
+    (println (keys library/sketches))
+    (fn []
+      [:div#library.container
+       "Load drawing:"
+       (concatv [:select {:value (name @sketch-name)
+                          :on-change set-sketch}]
+                (mapv (fn [s] [:option (name s)])
+                      (keys library/sketches)))
+       [:button {:on-click #(rf/dispatch [:load-sketch @sketch-name])}
+        "OK"]])))
+
 (defn- debug []
   (let [db-atom (rf/subscribe [:db])
         editor-atom (rf/subscribe [:editor])
@@ -91,4 +106,5 @@
       [visual-editor]
       [source-editor]
       [editor-options]
+      [library]
       [debug]]]))

@@ -26,6 +26,7 @@
 
 #forms {
     width: 100%;
+    min-height: 1em;
 }
 
 .form {
@@ -63,6 +64,11 @@
 
 #editor-type > select {
     margin-left: 10px;
+}
+
+#library > select {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 #debug-toggle {
