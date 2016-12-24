@@ -21,13 +21,23 @@
   (let [circumference (* 2 radius)]
     (q/ellipse x y circumference circumference)))
 
+(defn- curve-control-points [[[x1 y1] [x2 y2]] orientation [w h]]
+  (case orientation
+    :down [[x1 0] [x2 0]]
+    :up [[x1 h] [x2 h]]
+    :left [[0 y1] [0 y2]]
+    :right [[w y1] [w y2]]))
+
 (defn draw-curve!
-  [[[x1 y1] [x2 y2]] [[cx1 cy1] [cx2 cy2]] thickness color]
-  (q/no-fill)
-  (q/stroke-weight thickness)
-  (apply q/stroke (q.color/color color))
-  (q/curve cx1 cy1 x1 y1 x2 y2 cx2 cy2)
-  (q/fill :black))
+  [[[x1 y1] [x2 y2] :as position] orientation thickness color sketch-size]
+  (let [[[cx1 cy1] [cx2 cy2]] (curve-control-points position
+                                                    orientation
+                                                    sketch-size)]
+    (q/no-fill)
+    (q/stroke-weight thickness)
+    (apply q/stroke (q.color/color color))
+    (q/curve x1 cy1 x1 y1 x2 y2 cx2 cy2)
+    (q/fill :black)))
 
 (defn draw-text! [text [x y] size color]
   (set-color! color)
@@ -48,9 +58,19 @@
   (clear! (:bg-color @sketch-atom))
   (doseq [{:keys [fun color] :as form} @code-atom]
     (case fun
-      :circle (draw-circle! (:position form) (:radius form) color)
-      :curve (draw-curve! (:position form) (:control form) (:thickness form) color)
-      :text (draw-text! (:text form) (:position form) (:size form) color)
+      :circle
+      (let [{:keys [position radius]} form]
+        (draw-circle! position radius color))
+
+      :curve
+      (let [{:keys [position thickness orientation]} form]
+        (draw-curve! position orientation thickness color
+                     (:size @sketch-atom)))
+
+      :text
+      (let [{:keys [text position size]} form]
+        (draw-text! text position size color))
+
       nil)))
 
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
@@ -91,7 +111,8 @@
     [r/create-class
      {:reagent-render
       (fn []
-        [canvas-tag-&-id {:style {:max-width w} ; prevent stretching when used in flex container
+        [canvas-tag-&-id {:style {:max-width w
+                                  :max-height h} ; prevent stretching when used in flex container
                           :width  w
                           :height h}])
 

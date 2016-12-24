@@ -6,6 +6,11 @@
                 :curve
                 :text])
 
+(def orientations [:down
+                   :up
+                   :left
+                   :right])
+
 (defn add [code form]
   (let [form (assoc form :index (count code))]
     (conj code form)))
@@ -25,7 +30,7 @@
            :circle {:position [0 0]
                     :radius 0}
            :curve {:position [[0 0] [0 0]]
-                   :control [[0 0] [0 0]]
+                   :orientation :down
                    :thickness 10}
            :text {:text ""
                   :position [0 0]

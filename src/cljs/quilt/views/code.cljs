@@ -1,5 +1,6 @@
 (ns quilt.views.code
   (:require [cljs.reader :refer [read-string]]
+            [quilt.code :as code]
             [quilt.color :refer [color]]
             [quilt.util :refer [concatv get-value]]
             [re-frame.core :as rf]
@@ -34,6 +35,15 @@
    (map (fn [c] [:option (str c)])
         (keys color))))
 
+(defn- orientation-picker [form]
+  (concatv
+   [:select
+    {:value (str (:orientation form))
+     :on-change #(let [new-value (read-string (get-value %))]
+                   (replace-code (assoc form :orientation new-value)))}]
+   (map (fn [c] [:option (str c)])
+        code/orientations)))
+
 (defn- render-circle [form]
   ["(circle "
    "[" (input-num 3 form [:position 0]) " "
@@ -46,11 +56,8 @@
    "[[" (input-num 3 form [:position 0 0]) " "
    (input-num 3 form [:position 0 1]) "] ["
    (input-num 3 form [:position 1 0]) " "
-   (input-num 3 form [:position 1 1]) "]] [["
-   (input-num 3 form [:control 0 0]) " "
-   (input-num 3 form [:control 0 1]) "] ["
-   (input-num 3 form [:control 1 0]) " "
-   (input-num 3 form [:control 1 1]) "]] "
+   (input-num 3 form [:position 1 1]) "]] "
+   (orientation-picker form) " "
    (input-num 2 form [:thickness]) " "
    (color-picker form) ")"])
 
