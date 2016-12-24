@@ -37,6 +37,7 @@
     (q/stroke-weight thickness)
     (apply q/stroke (q.color/color color))
     (q/curve x1 cy1 x1 y1 x2 y2 cx2 cy2)
+    (q/stroke-weight 1)
     (q/fill :black)))
 
 (defn draw-text! [text [x y] size color]
