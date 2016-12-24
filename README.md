@@ -1,6 +1,25 @@
 # quilt
 
-A [re-frame](https://github.com/Day8/re-frame) application designed to ... well, that part is up to you.
+Quilt is a ClojureScript app designed to teach kids how to program.
+
+It lets kids make basic drawings by writing code, either in a visual editor where they select functions and fill in parameters, or in a source editor where they can actually type in the code.
+
+Actually, it's harder to explain than it is to just show you. Give it a whirl at:
+
+http://jmglov.net/quilt/
+
+## Stuff I need to add
+
+In no particular order:
+
+* Give decent error messages when eval fails in the source editor
+* Nicer styling
+* Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
+* Cloud load and save so kids can show off their drawings outside of class
+
+If there's something you want to see, [open an issue](https://github.com/jmglov/quilt/issues)!
+
+If you just want to chat about teaching programming or Clojure or ClojureScript or whatever, hit me up on Twitter. I'm, as you might expect, [@jmglov](https://twitter.com/jmglov). :)
 
 ## Development Mode
 

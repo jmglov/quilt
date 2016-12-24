@@ -1,4 +1,8 @@
 (defproject quilt "0.1.0-SNAPSHOT"
+  :description "A ClojureScript app designed to teach kids how to program"
+  :url "http://jmglov.net/quilt/"
+  :license {:name "MIT License"
+            :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.293"]
                  [quil "2.5.0"]
