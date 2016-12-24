@@ -32,3 +32,13 @@
  :replace-code
  (fn [db [_ form]]
    (update db :code code/replace form)))
+
+(re-frame/reg-event-db
+ :select-editor
+ (fn [db [_ type]]
+   (assoc-in db [:editor :type] type)))
+
+(re-frame/reg-event-db
+ :toggle-debug
+ (fn [db [_]]
+   (update-in db [:editor :debug?] not)))

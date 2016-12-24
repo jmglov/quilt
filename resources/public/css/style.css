@@ -2,8 +2,14 @@
     display: flex;
 }
 
+.outlined {
+    outline: black solid thin;
+}
+
 #editor {
     flex-grow: 1;
+    padding-top: 0px;
+    padding-bottom: 0px;
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -13,17 +19,25 @@
     padding-bottom: 10px;
 }
 
+#editor > h2 {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
 #forms {
     width: 100%;
 }
 
-#source-editor > textarea {
-    width: 100%;
-    height: 100px;
+.form {
+    padding: 5px 5px 5px 5px;
 }
 
-.outlined {
-    outline: black solid thin;
+.form > button {
+    float: right;
+}
+
+#modify-forms {
+    margin-top: 10px;
 }
 
 #modify-forms > .outlined {
@@ -38,10 +52,20 @@
     margin-left: 10px;
 }
 
-.form {
-    padding: 5px 5px 5px 5px;
+#source-editor > textarea {
+    width: 100%;
+    height: 100px;
 }
 
-.form > button {
-    float: right;
+#editor-type > select {
+    margin-left: 10px;
+}
+
+#debug-toggle {
+    margin-left: 25px;
+}
+
+#debug > h2 {
+    margin-top: 0px;
+    margin-bottom: 10px;
 }

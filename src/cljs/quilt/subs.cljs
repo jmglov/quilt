@@ -1,13 +1,9 @@
 (ns quilt.subs
-  (:require [re-frame.core :as re-frame])
+  (:require [re-frame.core :as rf])
   (:require-macros [reagent.ratom :refer [reaction]]))
 
-(re-frame/reg-sub
- :code
- (fn [db]
-   (:code db)))
+(rf/reg-sub :db identity)  ; return the entire db
 
-(re-frame/reg-sub
- :sketch
- (fn [db]
-   (:sketch db)))
+(rf/reg-sub :code :code)
+(rf/reg-sub :editor :editor)
+(rf/reg-sub :sketch :sketch)
