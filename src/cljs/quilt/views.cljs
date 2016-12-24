@@ -35,16 +35,16 @@
 (defn- source-editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])
-        source (r/atom (code/forms->str @code-atom))
-        eval-code #(rf/dispatch [:eval-code @source])]
+        source-atom (rf/subscribe [:source])
+        eval-code #(rf/dispatch [:eval-code])]
     (fn []
       (when (= :source (:type @editor-atom))
         [:div#source-editor
-         [:textarea {:value @source
-                     :on-change #(reset! source (get-value %))}]
+         [:textarea {:value @source-atom
+                     :on-change #(rf/dispatch [:set-source (get-value %)])}]
          [:div.container
           [:button {:on-click eval-code} "Eval"]
-          [:button {:on-click #(do (reset! source "") clear-code)}
+          [:button {:on-click #(rf/dispatch [:set-source ""])}
            "Clear"]]]))))
 
 (defn- editor-options []

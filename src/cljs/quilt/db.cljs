@@ -2,6 +2,7 @@
 
 (def default-db
   {:code []
+   :source ""
    :editor {:type :visual
             :debug? false}
    :sketch {:name "sketch"

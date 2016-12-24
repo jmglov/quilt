@@ -7,3 +7,4 @@
 (rf/reg-sub :code :code)
 (rf/reg-sub :editor :editor)
 (rf/reg-sub :sketch :sketch)
+(rf/reg-sub :source :source)
