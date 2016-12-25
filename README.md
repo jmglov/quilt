@@ -12,10 +12,19 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
+* More shapes!
+  * Rectangle
+  * Line
+  * Triangle
+* More colours
+* Display coordinates on mouseover
+* Lo-res mode (chunky pixels) for younger students
+* Help text (mouseover?)
 * Give decent error messages when eval fails in the source editor
 * Nicer styling
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
+* Readonly mode so friends can look but not touch
 
 If there's something you want to see, [open an issue](https://github.com/jmglov/quilt/issues)!
 
