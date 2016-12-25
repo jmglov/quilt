@@ -86,6 +86,16 @@
    (input-num 2 form [:size]) " "
    (color-picker form) ")"])
 
+(defn- render-triangle [form]
+  ["(triangle "
+   "[[" (input-num 3 form [:position 0 0]) " "
+   (input-num 3 form [:position 0 1]) "] ["
+   (input-num 3 form [:position 1 0]) " "
+   (input-num 3 form [:position 1 1]) "] ["
+   (input-num 3 form [:position 2 0]) " "
+   (input-num 3 form [:position 2 1]) "]] "
+   (color-picker form) ")"])
+
 (defn render [{:keys [fun] :as form}]
   (concatv [:div.form]
            (case fun
@@ -93,5 +103,6 @@
              :curve (render-curve form)
              :line (render-line form)
              :rectangle (render-rectangle form)
-             :text (render-text form))
+             :text (render-text form)
+             :triangle (render-triangle form))
            [[:button {:on-click #(delete-code form)} "Delete"]]))

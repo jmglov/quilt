@@ -12,8 +12,6 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* More shapes!
-  * Triangle
 * More colours
 * Display coordinates on mouseover
 * Lo-res mode (chunky pixels) for younger students

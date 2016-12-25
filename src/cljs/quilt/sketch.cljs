@@ -57,6 +57,11 @@
   (q/text-align :center :center)
   (q/text text x y))
 
+(defn draw-triangle!
+  [[[x1 y1] [x2 y2] [x3 y3]] color]
+  (set-color! color)
+  (q/triangle x1 y1 x2 y2 x3 y3))
+
 (defn- setup [sketch-atom]
   (let [{:keys [bg-color fg-color]} @sketch-atom]
     (println "Setting up sketch")
@@ -90,6 +95,10 @@
       :text
       (let [{:keys [text position size]} form]
         (draw-text! text position size color))
+
+      :triangle
+      (let [{:keys [position]} form]
+        (draw-triangle! position color))
 
       nil)))
 

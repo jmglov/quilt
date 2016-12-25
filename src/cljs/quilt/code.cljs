@@ -35,7 +35,10 @@
           :params [:position
                    :text
                    :size
-                   :color]}})
+                   :color]}
+   :triangle {:defaults {:position [[0 0] [0 0] [0 0]]}
+              :params [:position
+                       :color]}})
 
 (def orientations [:down
                    :up
