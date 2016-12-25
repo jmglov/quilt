@@ -40,6 +40,10 @@
     (q/stroke-weight 1)
     (q/fill :black)))
 
+(defn draw-rectangle! [[x y] width height color]
+  (set-color! color)
+  (q/rect x y width height))
+
 (defn draw-text! [text [x y] size color]
   (set-color! color)
   (q/text-size size)
@@ -67,6 +71,10 @@
       (let [{:keys [position thickness orientation]} form]
         (draw-curve! position orientation thickness color
                      (:size @sketch-atom)))
+
+      :rectangle
+      (let [{:keys [position width height]} form]
+        (draw-rectangle! position width height color))
 
       :text
       (let [{:keys [text position size]} form]

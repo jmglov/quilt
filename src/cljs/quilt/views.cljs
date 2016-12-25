@@ -15,7 +15,7 @@
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])
-        new-fun (r/atom (first code/functions))
+        new-fun (r/atom (key (first code/functions)))
         add-code #(rf/dispatch [:add-code (code/create-form @new-fun)])]
     (fn []
       (when (= :visual (:type @editor-atom))
@@ -28,7 +28,7 @@
             [:select
              {:value (name @new-fun)
               :on-change #(reset! new-fun (keyword (get-value %)))}]
-            (map (fn [fun] [:option (name fun)]) code/functions))
+            (map (fn [[fun _]] [:option (name fun)]) code/functions))
            [:button {:on-click add-code} "Add"]]
           [:button {:on-click clear-code} "Delete all"]]]))))
 

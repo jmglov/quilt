@@ -4,9 +4,33 @@
             [quilt.color :as color])
   (:refer-clojure :exclude [replace]))
 
-(def functions [:circle
-                :curve
-                :text])
+(def functions
+  {:circle {:defaults {:position [0 0]
+                       :radius 0}
+            :params [:position
+                     :radius
+                     :color]}
+   :curve {:defaults {:position [[0 0] [0 0]]
+                      :orientation :down
+                      :thickness 10}
+           :params [:position
+                    :orientation
+                    :thickness
+                    :color]}
+   :rectangle {:defaults {:position [0 0]
+                          :width 0
+                          :height 0}
+               :params [:position
+                        :width
+                        :height
+                        :color]}
+   :text {:defaults {:position [0 0]
+                     :text ""
+                     :size 24}
+          :params [:position
+                   :text
+                   :size
+                   :color]}})
 
 (def orientations [:down
                    :up
@@ -41,25 +65,12 @@
 (defn create-form [fun]
   (merge {:fun fun
           :color color/default}
-         (case fun
-           :circle {:position [0 0]
-                    :radius 0}
-           :curve {:position [[0 0] [0 0]]
-                   :orientation :down
-                   :thickness 10}
-           :text {:position [0 0]
-                  :text ""
-                  :size 24})))
+         (get-in functions [fun :defaults])))
 
 (defn- form->str [{:keys [fun] :as form}]
   form
   (str "(" (name fun) " "
-       (->> (concat [:position]
-                    (case fun
-                      :circle [:radius]
-                      :curve [:orientation :thickness]
-                      :text [:text :size])
-                    [:color])
+       (->> (get-in functions [fun :params])
             (map #(pr-str (form %)))
             (string/join " "))
        ")"))
@@ -72,13 +83,7 @@
 (defn- read-line [line]
   (when-let [[fun & args] (read-string line)]
     (let [fun (keyword fun)
-          params (concat [:position]
-                         (case fun
-                           :circle [:radius]
-                           :curve [:orientation :thickness]
-                           :text [:text :size]
-                           nil)
-                         [:color])]
+          params (get-in functions [fun :params])]
       (->> (interleave params args)
            (apply hash-map)
            (merge {:fun fun})))))

@@ -61,6 +61,14 @@
    (input-num 2 form [:thickness]) " "
    (color-picker form) ")"])
 
+(defn- render-rectangle [form]
+  ["(rectangle "
+   "[" (input-num 3 form [:position 0]) " "
+   (input-num 3 form [:position 1]) "] "
+   (input-num 3 form [:width]) " "
+   (input-num 3 form [:height]) " "
+   (color-picker form) ")"])
+
 (defn- render-text [form]
   ["(text "
    "[" (input-num 3 form [:position 0]) " "
@@ -74,5 +82,6 @@
            (case fun
              :circle (render-circle form)
              :curve (render-curve form)
+             :rectangle (render-rectangle form)
              :text (render-text form))
            [[:button {:on-click #(delete-code form)} "Delete"]]))
