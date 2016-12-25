@@ -13,7 +13,6 @@ http://jmglov.net/quilt/
 In no particular order:
 
 * More shapes!
-  * Line
   * Triangle
 * More colours
 * Display coordinates on mouseover

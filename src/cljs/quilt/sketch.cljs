@@ -40,6 +40,13 @@
     (q/stroke-weight 1)
     (q/fill :black)))
 
+(defn draw-line!
+  [[[x1 y1] [x2 y2]] thickness color]
+  (q/stroke-weight thickness)
+  (apply q/stroke (q.color/color color))
+  (q/line x1 y1 x2 y2)
+  (q/stroke-weight 1))
+
 (defn draw-rectangle! [[x y] width height color]
   (set-color! color)
   (q/rect x y width height))
@@ -71,6 +78,10 @@
       (let [{:keys [position thickness orientation]} form]
         (draw-curve! position orientation thickness color
                      (:size @sketch-atom)))
+
+      :line
+      (let [{:keys [position thickness]} form]
+        (draw-line! position thickness color))
 
       :rectangle
       (let [{:keys [position width height]} form]

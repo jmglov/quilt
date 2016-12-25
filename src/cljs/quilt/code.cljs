@@ -17,6 +17,11 @@
                     :orientation
                     :thickness
                     :color]}
+   :line {:defaults {:position [[0 0] [0 0]]
+                     :thickness 10}
+          :params [:position
+                   :thickness
+                   :color]}
    :rectangle {:defaults {:position [0 0]
                           :width 0
                           :height 0}
