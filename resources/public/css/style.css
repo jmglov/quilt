@@ -6,6 +6,12 @@
     outline: black solid thin;
 }
 
+#mouse-pos-label {
+    font-size: larger;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
 #editor {
     flex-grow: 1;
     padding-top: 0px;

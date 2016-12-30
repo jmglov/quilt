@@ -12,6 +12,14 @@
 (defn- clear-code []
   (rf/dispatch [:clear-code]))
 
+(defn- mouse-pos []
+  (let [mouse-atom (rf/subscribe [:mouse])]
+    (fn []
+      [:div
+       [:span#mouse-pos-label "[x y]"]
+       (let [[x y] (:pos @mouse-atom)]
+         [:span#mouse-pos (str "[" x " " y "]")])])))
+
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])
@@ -100,7 +108,10 @@
 (defn main-panel []
   (fn []
     [:div.container
-     [sketch]
+     [:div
+      [sketch]
+      [:div.container
+       [mouse-pos]]]
      [:div#editor
       [:h2 "Code"]
       [visual-editor]

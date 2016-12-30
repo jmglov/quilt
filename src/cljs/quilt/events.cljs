@@ -56,6 +56,18 @@
    (assoc-in db [:editor :type] type)))
 
 (rf/reg-event-db
+ :lock-mouse-pos
+ (fn [db [_]]
+   (update-in db [:mouse :locked?] not)))
+
+(rf/reg-event-db
+ :set-mouse-pos
+ (fn [db [_ pos]]
+   (if (get-in db [:mouse :locked?])
+     db
+     (assoc-in db [:mouse :pos] pos))))
+
+(rf/reg-event-db
  :toggle-debug
  (fn [db [_]]
    (update-in db [:editor :debug?] not)))

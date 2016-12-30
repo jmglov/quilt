@@ -13,7 +13,6 @@ http://jmglov.net/quilt/
 In no particular order:
 
 * Drag and drop reordering
-* Display coordinates on mouseover
 * Add polygons
 * Lo-res mode (chunky pixels) for younger students
 * Configure sketch dimensions

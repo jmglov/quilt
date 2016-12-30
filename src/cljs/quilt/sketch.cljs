@@ -4,7 +4,7 @@
             [quil.core :as q :include-macros true]
             [quil.sketch :as q.sketch]
             [quilt.color :as q.color]
-            [re-frame.core :as re-frame]
+            [re-frame.core :as rf]
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
 
@@ -103,6 +103,12 @@
 
       nil)))
 
+(defn- get-mouse-pos [event]
+  (let [canvas-rect (.getBoundingClientRect (.-target event))
+        x (- (.-clientX event) (.-left canvas-rect))
+        y (- (.-clientY event) (.-top canvas-rect))]
+    [x y]))
+
 ;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
 
 (defn sketch
@@ -121,8 +127,8 @@
   ;;     canvas id at compile time.
   ;;     But no -- the same call site can create multiple sketches.
   []
-  (let [code-atom (re-frame/subscribe [:code])
-        sketch-atom (re-frame/subscribe [:sketch])
+  (let [code-atom (rf/subscribe [:code])
+        sketch-atom (rf/subscribe [:sketch])
         sketch-args {:host (:name @sketch-atom)
                      :size (:size @sketch-atom)
                      :setup (partial setup sketch-atom)
@@ -144,7 +150,10 @@
         [canvas-tag-&-id {:style {:max-width w
                                   :max-height h} ; prevent stretching when used in flex container
                           :width  w
-                          :height h}])
+                          :height h
+                          :on-click #(rf/dispatch [:lock-mouse-pos])
+                          :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                                       (get-mouse-pos %)])}])
 
       :component-did-mount
       (fn []
