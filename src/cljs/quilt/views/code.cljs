@@ -1,7 +1,7 @@
 (ns quilt.views.code
   (:require [cljs.reader :refer [read-string]]
             [quilt.code :as code]
-            [quilt.color :refer [color]]
+            [quilt.color :as color]
             [quilt.util :refer [concatv get-value]]
             [re-frame.core :as rf]
             [reagent.core :as r]))
@@ -33,7 +33,7 @@
      :on-change #(let [new-color (read-string (get-value %))]
                    (replace-code (assoc form :color new-color)))}]
    (map (fn [c] [:option (str c)])
-        (keys color))))
+        color/basic)))
 
 (defn- orientation-picker [form]
   (concatv
