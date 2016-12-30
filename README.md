@@ -13,14 +13,20 @@ http://jmglov.net/quilt/
 In no particular order:
 
 * More colours
+* No rounded lines
+* Drag and drop reordering
 * Display coordinates on mouseover
+* Add polygons
 * Lo-res mode (chunky pixels) for younger students
+* Configure sketch dimensions
 * Help text (mouseover?)
 * Give decent error messages when eval fails in the source editor
 * Nicer styling
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
 * Readonly mode so friends can look but not touch
+* Functional mode
+* ClojureScript eval
 
 If there's something you want to see, [open an issue](https://github.com/jmglov/quilt/issues)!
 
