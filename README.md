@@ -12,7 +12,6 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* No rounded lines
 * Drag and drop reordering
 * Display coordinates on mouseover
 * Add polygons

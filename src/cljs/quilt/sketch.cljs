@@ -69,6 +69,7 @@
     (println "Foreground color:" fg-color)
     (clear! bg-color)
     (set-color! fg-color)
+    (q/stroke-cap :square)
     (q/frame-rate 1)))
 
 (defn- draw! [sketch-atom code-atom]
