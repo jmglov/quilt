@@ -8,13 +8,16 @@
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
 
-(defn- clear! [[r g b]]
-  (q/background r g b))
-
 (defn set-color! [c]
   (let [[r g b] (if (keyword? c) (q.color/color c) c)]
     (q/fill r g b)
     (q/stroke r g b)))
+
+(defn- clear! [sketch]
+  (let [{:keys [size bg-color]} sketch
+        [w h] size]
+    (set-color! bg-color)
+    (q/rect 0 0 w h)))
 
 (defn draw-circle! [[x y] radius color]
   (set-color! color)
@@ -67,13 +70,13 @@
     (println "Setting up sketch")
     (println "Background color:" bg-color)
     (println "Foreground color:" fg-color)
-    (clear! bg-color)
+    (clear! @sketch-atom)
     (set-color! fg-color)
     (q/stroke-cap :square)
     (q/frame-rate 1)))
 
 (defn- draw! [sketch-atom code-atom]
-  (clear! (:bg-color @sketch-atom))
+  (clear! @sketch-atom)
   (doseq [{:keys [fun color] :as form} @code-atom]
     (case fun
       :circle
@@ -133,13 +136,6 @@
                      :size (:size @sketch-atom)
                      :setup (partial setup sketch-atom)
                      :draw (partial draw! sketch-atom code-atom)}
-        size (:size sketch-args)
-        _ (assert (or (nil? size)
-                      (and (vector? size)
-                           (= (count size) 2)))
-                  (str ":size should be nil or a vector of size 2, but it is "
-                       size))
-        [w h] size
         canvas-id (do
                     (assert (contains? sketch-args :host))
                     (:host sketch-args))
@@ -147,10 +143,10 @@
     [r/create-class
      {:reagent-render
       (fn []
-        [canvas-tag-&-id {:style {:max-width w
-                                  :max-height h} ; prevent stretching when used in flex container
-                          :width  w
-                          :height h
+        [canvas-tag-&-id {:style {:max-width (get-in @sketch-atom [:size 0])
+                                  :max-height (get-in @sketch-atom [:size 1])}
+                          :width (get-in @sketch-atom [:size 0])
+                          :height (get-in @sketch-atom [:size 1])
                           :on-click #(rf/dispatch [:lock-mouse-pos])
                           :on-mouseMove #(rf/dispatch [:set-mouse-pos
                                                        (get-mouse-pos %)])}])
@@ -164,7 +160,8 @@
         (a/go
           (println "Attaching sketch")
           (apply q/sketch
-                 (apply concat sketch-args))))
+                 (apply concat (assoc sketch-args
+                                      :size (:size @sketch-atom))))))
 
       :component-will-unmount
       (fn []

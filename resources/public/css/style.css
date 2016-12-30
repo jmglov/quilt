@@ -6,10 +6,14 @@
     outline: black solid thin;
 }
 
-#mouse-pos-label {
+span.label {
     font-size: larger;
     font-weight: bold;
     margin-right: 10px;
+}
+
+#mouse-pos {
+    margin-left: auto;
 }
 
 #editor {

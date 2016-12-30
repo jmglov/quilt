@@ -15,7 +15,6 @@ In no particular order:
 * Drag and drop reordering
 * Add polygons
 * Lo-res mode (chunky pixels) for younger students
-* Configure sketch dimensions
 * Help text (mouseover?)
 * Give decent error messages when eval fails in the source editor
 * Nicer styling

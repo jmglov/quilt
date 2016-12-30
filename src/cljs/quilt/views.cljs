@@ -1,5 +1,6 @@
 (ns quilt.views
   (:require [cljs.pprint :refer [pprint]]
+            [cljs.reader :refer [read-string]]
             [clojure.string :as string]
             [quilt.code :as code]
             [quilt.library :as library]
@@ -12,13 +13,39 @@
 (defn- clear-code []
   (rf/dispatch [:clear-code]))
 
+(defn- set-sketch-size [width height]
+  (rf/dispatch [:set-sketch-size width height]))
+
+(defn- sketch-size []
+  (let [sketch-atom (rf/subscribe [:sketch])]
+    (fn []
+      (concatv [:div.container
+                [:span.label "Drawing size"]]
+               (let [[width height] (:size @sketch-atom)]
+                 [[:div
+                   "["
+                   [:input {:type "text"
+                            :size 3
+                            :maxLength 3
+                            :value (str width)
+                            :on-change #(let [width (get-value % read-string 500)]
+                                          (set-sketch-size width height))}]
+                   " "
+                   [:input {:type "text"
+                            :size 3
+                            :maxLength 3
+                            :value (str height)
+                            :on-change #(let [height (get-value % read-string 500)]
+                                          (set-sketch-size width height))}]
+                   "]"]])))))
+
 (defn- mouse-pos []
   (let [mouse-atom (rf/subscribe [:mouse])]
     (fn []
-      [:div
-       [:span#mouse-pos-label "[x y]"]
+      [:div#mouse-pos
+       [:span.label "Current position"]
        (let [[x y] (:pos @mouse-atom)]
-         [:span#mouse-pos (str "[" x " " y "]")])])))
+         [:span (str "[" x " " y "]")])])))
 
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
@@ -111,6 +138,7 @@
      [:div
       [sketch]
       [:div.container
+       [sketch-size]
        [mouse-pos]]]
      [:div#editor
       [:h2 "Code"]

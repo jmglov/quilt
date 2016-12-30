@@ -68,6 +68,12 @@
      (assoc-in db [:mouse :pos] pos))))
 
 (rf/reg-event-db
+ :set-sketch-size
+ (fn [db [_ width height]]
+   (println "Setting sketch size:" width height)
+   (assoc-in db [:sketch :size] [width height])))
+
+(rf/reg-event-db
  :toggle-debug
  (fn [db [_]]
    (update-in db [:editor :debug?] not)))
