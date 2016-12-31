@@ -7,6 +7,7 @@
             [quilt.sketch :as sketch :refer [sketch]]
             [quilt.util :refer [concatv get-value]]
             [quilt.views.code :as views.code]
+            [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -24,19 +25,11 @@
                (let [[width height] (:size @sketch-atom)]
                  [[:div
                    "["
-                   [:input {:type "text"
-                            :size 3
-                            :maxLength 3
-                            :value (str width)
-                            :on-change #(let [width (get-value % read-string 500)]
-                                          (set-sketch-size width height))}]
+                   (widgets/input-num #(set-sketch-size % height)
+                                      3 (str width))
                    " "
-                   [:input {:type "text"
-                            :size 3
-                            :maxLength 3
-                            :value (str height)
-                            :on-change #(let [height (get-value % read-string 500)]
-                                          (set-sketch-size width height))}]
+                   (widgets/input-num #(set-sketch-size width %)
+                                      3 (str height))
                    "]"]])))))
 
 (defn- mouse-pos []

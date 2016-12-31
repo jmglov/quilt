@@ -3,6 +3,7 @@
             [quilt.code :as code]
             [quilt.color :as color]
             [quilt.util :refer [concatv get-value]]
+            [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
@@ -13,12 +14,8 @@
   (rf/dispatch [:replace-code form]))
 
 (defn- input-assoc [size form path tx default]
-  [:input {:type "text"
-           :size size
-           :maxLength size
-           :value (str (get-in form path))
-           :on-change #(let [new-value (get-value % tx default)]
-                         (replace-code (assoc-in form path new-value)))}])
+  (widgets/input #(replace-code (assoc-in form path %))
+                 size (str (get-in form path)) tx default))
 
 (defn- input-num [size form path]
   (input-assoc size form path read-string 0))
