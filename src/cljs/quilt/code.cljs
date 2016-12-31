@@ -70,6 +70,18 @@
     (println "New code:" code)
     code))
 
+(defn reorder [code form new-index]
+  (let [cur-index (:index form)
+        others (remove #(= cur-index (:index %)) code)
+        before (take new-index others)
+        after (drop new-index others)]
+    (println "Moving form" (:fun form) "from index" cur-index
+             "to" new-index)
+    (add-forms []
+               (concat before
+                       [(assoc form :index new-index)]
+                       after))))
+
 (defn create-form [fun]
   (merge {:fun fun
           :color color/default}

@@ -27,18 +27,34 @@
 (def dragging-form (atom nil))
 (def dragging-listener-installed? (atom false))
 
-(defn on-mouse-up [event]
+(defn- on-mouse-up [event]
   (when-let [{:keys [form elem siblings]} @dragging-form]
-    (println "Dropping at" (pr-str (util/mouse-position event)))
+    (let [parent-pos (util/parent-position elem)
+          [_ y] (util/relative-position (util/mouse-position event)
+                                        parent-pos)
+          ;; The mouse pointer takes up a little room
+          y (- y 10)
+          _ (println "Dragging" (:fun form) "index" (:index form) "from y"
+                     (second (util/relative-position elem)) "to y" y)
+          new-index (->> (range 0 (count siblings))
+                         (some (fn [i]
+                                 (let [sibling (nth siblings i)
+                                       [_ sibling-y] (util/relative-position sibling)]
+                                   (println "Form y" y "sibling" i "y:" sibling-y)
+                                   (when (and (not (identical? elem sibling))
+                                              (<= y sibling-y))
+                                     (if (<= i (:index form)) i (dec i)))))))]
+      (rf/dispatch [:reorder-code form (or new-index (dec (count siblings)))]))
     (reset! dragging-form nil)))
 
 (defn- mouse-down-handler [form]
   (fn [event]
-    (let [elem (.-target event)]
+    (let [elem (.-target event)
+          [_ y] (util/relative-position (util/mouse-position event) elem)]
       (reset! dragging-form {:form form
                              :elem elem
-                             :siblings (-> elem .-parentNode .-children)}))
-    (println "Dragging from" (pr-str (util/mouse-position event)))
+                             :siblings (-> elem .-parentNode .-children)})
+      (println "Dragging from y:" y))
     (when-not @dragging-listener-installed?
       (events/listen js/window EventType.MOUSEUP on-mouse-up)
       (reset! dragging-listener-installed? true))))
