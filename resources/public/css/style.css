@@ -52,6 +52,12 @@ span.label {
                                     not supported by any browser */
 }
 
+.drag-handle {
+    background-color: DarkGrey;
+    margin-right: 5px;
+    padding: 0px 5px 0px 5px;
+}
+
 .form > button {
     float: right;
 }

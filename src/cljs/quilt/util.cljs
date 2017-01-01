@@ -3,6 +3,19 @@
 (defn concatv [& vs]
   (into [] (apply concat vs)))
 
+(defn ancestor
+  "Returns the nth ancestor of elem"
+  [elem n]
+  (when (and elem (pos-int? n))
+    (loop [n n
+           elem elem]
+      (if (or (= 0 n) (nil? elem))
+        elem
+        (recur (dec n) (.-parentElement elem))))))
+
+(defn parent [elem]
+  (ancestor elem 1))
+
 (defn get-value
   ([element]
    (-> element .-target .-value))
