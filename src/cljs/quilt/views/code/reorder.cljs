@@ -40,6 +40,15 @@
                (<= y cur-y))
       (if (<= i index) i (dec i)))))
 
+(defn- form-for [handle]
+  (util/parent handle))
+
+(defn- select-form [form]
+  (util/add-class form "selected-form"))
+
+(defn- unselect-form [form]
+  (util/remove-class form "selected-form"))
+
 (defn- on-mouse-up [event]
   (when-let [{:keys [form selected-elem]} @selected-form]
     (let [{:keys [fun index]} form
@@ -53,6 +62,7 @@
           new-index (->> (range 0 (count form-elems))
                          (some before-form))]
       (println "Moving" fun "from index" index "to" new-index)
+      (unselect-form selected-elem)
       (rf/dispatch [:reorder-code form (or new-index
                                            (dec (count form-elems)))]))
     (reset! selected-form nil)))
@@ -61,6 +71,7 @@
   (fn [event]
     (let [handle (.-target event)
           [_ y] (form-position handle)]
+      (select-form (form-for handle))
       (reset! selected-form {:form form, :selected-elem (util/parent handle)})
       (println (str "Dragging " fun " (index " index ") from y position " y)))
     (when-not @handler-installed?

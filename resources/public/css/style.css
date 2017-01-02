@@ -6,6 +6,17 @@
     outline: black solid thin;
 }
 
+.unselectable {
+    /* Disable text selection */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                    not supported by any browser */
+}
+
 span.label {
     font-size: larger;
     font-weight: bold;
@@ -42,14 +53,6 @@ span.label {
 .form {
     padding: 5px 5px 5px 5px;
     cursor: pointer;
-    /* Disable text selection */
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none;   /* Chrome/Safari/Opera */
-    -khtml-user-select: none;    /* Konqueror */
-    -moz-user-select: none;      /* Firefox */
-    -ms-user-select: none;       /* Internet Explorer/Edge */
-    user-select: none;           /* Non-prefixed version, currently
-                                    not supported by any browser */
 }
 
 .drag-handle {
@@ -60,6 +63,10 @@ span.label {
 
 .form > button {
     float: right;
+}
+
+.selected-form {
+    background-color: #ffff80;
 }
 
 #modify-forms {

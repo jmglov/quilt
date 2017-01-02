@@ -3,6 +3,12 @@
 (defn concatv [& vs]
   (into [] (apply concat vs)))
 
+(defn add-class [elem css-class]
+  (-> elem .-classList (.add css-class)))
+
+(defn remove-class [elem css-class]
+  (-> elem .-classList (.remove css-class)))
+
 (defn ancestor
   "Returns the nth ancestor of elem"
   [elem n]

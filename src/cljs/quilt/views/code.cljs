@@ -95,7 +95,7 @@
     (color-picker form) ")"]])
 
 (defn render [{:keys [fun] :as form}]
-  (util/concatv [:div.form.container
+  (util/concatv [:div.form.unselectable.container
                  [:div.drag-handle
                   {:on-mouse-down (reorder/mouse-down-handler form)}
                   "↕"]]
