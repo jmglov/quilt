@@ -94,16 +94,20 @@
     (input-num 3 form [:position 2 1]) "]] "
     (color-picker form) ")"]])
 
-(defn render [{:keys [fun] :as form}]
-  (util/concatv [:div.form.unselectable.container
-                 [:div.drag-handle
-                  {:on-mouse-down (reorder/mouse-down-handler form)}
-                  "↕"]]
-                (case fun
-                  :circle (render-circle form)
-                  :curve (render-curve form)
-                  :line (render-line form)
-                  :rectangle (render-rectangle form)
-                  :text (render-text form)
-                  :triangle (render-triangle form))
-                [[:button {:on-click #(delete-code form)} "Delete"]]))
+(defn render [{:keys [fun index] :as form} editor-atom]
+  (let [selected-index (:selected-index @editor-atom)
+        css-classes (str "form unselectable container"
+                         (when (= selected-index index) " selected-form"))]
+    (util/concatv [:div
+                   {:class css-classes}
+                   [:div.drag-handle
+                    {:on-mouse-down (reorder/mouse-down-handler form editor-atom)}
+                    "↕"]]
+                  (case fun
+                    :circle (render-circle form)
+                    :curve (render-curve form)
+                    :line (render-line form)
+                    :rectangle (render-rectangle form)
+                    :text (render-text form)
+                    :triangle (render-triangle form))
+                  [[:button {:on-click #(delete-code form)} "Delete"]])))

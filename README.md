@@ -12,7 +12,6 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* Drag and drop reordering
 * Add polygons
 * Lo-res mode (chunky pixels) for younger students
 * Help text (mouseover?)

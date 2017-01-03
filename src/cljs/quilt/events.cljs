@@ -34,8 +34,8 @@
 
 (rf/reg-event-db
  :reorder-code
- (fn [{:keys [code] :as db} [_ form index]]
-   (update-code db (code/reorder code form index))))
+ (fn [{:keys [code] :as db} [_ old-index new-index]]
+   (update-code db (code/reorder code old-index new-index))))
 
 (rf/reg-event-db
  :clear-code
@@ -46,6 +46,20 @@
  :eval-code
  (fn [{:keys [source] :as db} [_]]
    (assoc db :code (code/add-forms [] (code/read source)))))
+
+
+;; Visual editor
+;; =============================================================================
+
+(rf/reg-event-db
+ :select-form
+ (fn [db [_ index]]
+   (assoc-in db [:editor :selected-index] index)))
+
+(rf/reg-event-db
+ :unselect-form
+ (fn [db [_]]
+   (assoc-in db [:editor :selected-index] nil)))
 
 
 ;; Source editor

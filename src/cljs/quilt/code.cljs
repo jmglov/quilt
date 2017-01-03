@@ -70,8 +70,8 @@
     (println "New code:" code)
     code))
 
-(defn reorder [code form new-index]
-  (let [cur-index (:index form)
+(defn reorder [code cur-index new-index]
+  (let [form (nth code cur-index)
         others (remove #(= cur-index (:index %)) code)
         before (take new-index others)
         after (drop new-index others)]
@@ -115,3 +115,6 @@
                   (into []))]
     (println "Read code:" code)
     code))
+
+(defn set-index [form index]
+  (assoc form :index index))

@@ -49,7 +49,7 @@
       (when (= :visual (:type @editor-atom))
         [:div
          (concatv [:div#forms.outlined]
-                  (mapv views.code/render @code-atom))
+                  (map #(views.code/render % editor-atom) @code-atom))
          [:div#modify-forms.container
           [:div.outlined
            (concatv
