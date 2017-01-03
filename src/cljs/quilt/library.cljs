@@ -4,23 +4,23 @@
 (def sketches
   {:hello-world [{:fun :text
                   :color :black
-                  :size 48
-                  :position [320 50]
+                  :size 56
+                  :position [250 50]
                   :text "Hello world!"}
                  {:fun :circle
                   :color :yellow
-                  :radius 100
-                  :position [320 240]}
+                  :radius 150
+                  :position [250 250]}
                  {:fun :circle
                   :color :black
                   :radius 10
-                  :position [280 200]}
+                  :position [200 175]}
                  {:fun :circle
                   :color :black
                   :radius 10
-                  :position [360 200]}
+                  :position [300 175]}
                  {:fun :curve
-                  :thickness 15
+                  :thickness 10
                   :color :black
                   :orientation :down
-                  :position [[260 250] [380 250]]}]})
+                  :position [[160 275] [340 275]]}]})
