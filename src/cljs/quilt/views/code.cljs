@@ -1,5 +1,6 @@
 (ns quilt.views.code
   (:require [cljs.reader :refer [read-string]]
+            [clojure.string :as string]
             [quilt.code :as code]
             [quilt.color :as color]
             [quilt.util :as util]
@@ -42,72 +43,92 @@
    (map (fn [c] [:option (str c)])
         code/orientations)))
 
-(defn- render-circle [form]
-  [[:div "(circle "
-    "[" (input-num 3 form [:position 0]) " "
-    (input-num 3 form [:position 1]) "] "
-    (input-num 3 form [:radius]) " "
-    (color-picker form) ")"]])
+(defn- render-readonly [form args]
+  [[:div (str "("
+              (->> (concat [:fun :position] args [:color])
+                   (map #(pr-str (form %)))
+                   (string/join " "))
+              ")")]])
 
-(defn- render-curve [form]
-  [[:div "(curve "
-    "[[" (input-num 3 form [:position 0 0]) " "
-    (input-num 3 form [:position 0 1]) "] ["
-    (input-num 3 form [:position 1 0]) " "
-    (input-num 3 form [:position 1 1]) "]] "
-    (orientation-picker form) " "
-    (input-num 2 form [:thickness]) " "
-    (color-picker form) ")"]])
+(defn- render-circle [form readonly?]
+  (if readonly?
+    (render-readonly form [:radius])
+    [[:div "(circle "
+      "[" (input-num 3 form [:position 0]) " "
+      (input-num 3 form [:position 1]) "] "
+      (input-num 3 form [:radius]) " "
+      (color-picker form) ")"]]))
 
-(defn- render-line [form]
-  [[:div "(line "
-    "[[" (input-num 3 form [:position 0 0]) " "
-    (input-num 3 form [:position 0 1]) "] ["
-    (input-num 3 form [:position 1 0]) " "
-    (input-num 3 form [:position 1 1]) "]] "
-    (input-num 2 form [:thickness]) " "
-    (color-picker form) ")"]])
+(defn- render-curve [form readonly?]
+  (if readonly?
+    (render-readonly form [:orientation :thickness])
+    [[:div "(curve "
+      "[[" (input-num 3 form [:position 0 0]) " "
+      (input-num 3 form [:position 0 1]) "] ["
+      (input-num 3 form [:position 1 0]) " "
+      (input-num 3 form [:position 1 1]) "]] "
+      (orientation-picker form) " "
+      (input-num 2 form [:thickness]) " "
+      (color-picker form) ")"]]))
 
-(defn- render-rectangle [form]
-  [[:div "(rectangle "
-    "[" (input-num 3 form [:position 0]) " "
-    (input-num 3 form [:position 1]) "] "
-    (input-num 3 form [:width]) " "
-    (input-num 3 form [:height]) " "
-    (color-picker form) ")"]])
+(defn- render-line [form readonly?]
+  (if readonly?
+    (render-readonly form [:thickness])
+    [[:div "(line "
+      "[[" (input-num 3 form [:position 0 0]) " "
+      (input-num 3 form [:position 0 1]) "] ["
+      (input-num 3 form [:position 1 0]) " "
+      (input-num 3 form [:position 1 1]) "]] "
+      (input-num 2 form [:thickness]) " "
+      (color-picker form) ")"]]))
 
-(defn- render-text [form]
-  [[:div "(text "
-    "[" (input-num 3 form [:position 0]) " "
-    (input-num 3 form [:position 1]) "] "
-    (input-text 30 form [:text]) " "
-    (input-num 2 form [:size]) " "
-    (color-picker form) ")"]])
+(defn- render-rectangle [form readonly?]
+  (if readonly?
+    (render-readonly form [:width :height])
+    [[:div "(rectangle "
+      "[" (input-num 3 form [:position 0]) " "
+      (input-num 3 form [:position 1]) "] "
+      (input-num 3 form [:width]) " "
+      (input-num 3 form [:height]) " "
+      (color-picker form) ")"]]))
 
-(defn- render-triangle [form]
-  [[:div "(triangle "
-    "[[" (input-num 3 form [:position 0 0]) " "
-    (input-num 3 form [:position 0 1]) "] ["
-    (input-num 3 form [:position 1 0]) " "
-    (input-num 3 form [:position 1 1]) "] ["
-    (input-num 3 form [:position 2 0]) " "
-    (input-num 3 form [:position 2 1]) "]] "
-    (color-picker form) ")"]])
+(defn- render-text [form readonly?]
+  (if readonly?
+    (render-readonly form [:text :size])
+    [[:div "(text "
+      "[" (input-num 3 form [:position 0]) " "
+      (input-num 3 form [:position 1]) "] "
+      (input-text 30 form [:text]) " "
+      (input-num 2 form [:size]) " "
+      (color-picker form) ")"]]))
+
+(defn- render-triangle [form readonly?]
+  (if readonly?
+    (render-readonly form [])
+    [[:div "(triangle "
+      "[[" (input-num 3 form [:position 0 0]) " "
+      (input-num 3 form [:position 0 1]) "] ["
+      (input-num 3 form [:position 1 0]) " "
+      (input-num 3 form [:position 1 1]) "] ["
+      (input-num 3 form [:position 2 0]) " "
+      (input-num 3 form [:position 2 1]) "]] "
+      (color-picker form) ")"]]))
 
 (defn render [{:keys [fun index] :as form} editor-atom]
-  (let [selected-index (:selected-index @editor-atom)
+  (let [{:keys [readonly? selected-index]} @editor-atom
         css-classes (str "form unselectable container"
                          (when (= selected-index index) " selected-form"))]
     (util/concatv [:div
                    {:class css-classes}
                    [:div.drag-handle
-                    {:on-mouse-down (reorder/mouse-down-handler form editor-atom)}
+                    {:on-mouse-down (when-not (:readonly? @editor-atom)
+                                      (reorder/mouse-down-handler form editor-atom))}
                     "↕"]]
                   (case fun
-                    :circle (render-circle form)
-                    :curve (render-curve form)
-                    :line (render-line form)
-                    :rectangle (render-rectangle form)
-                    :text (render-text form)
-                    :triangle (render-triangle form))
+                    :circle (render-circle form readonly?)
+                    :curve (render-curve form readonly?)
+                    :line (render-line form readonly?)
+                    :rectangle (render-rectangle form readonly?)
+                    :text (render-text form readonly?)
+                    :triangle (render-triangle form readonly?))
                   [[:button {:on-click #(delete-code form)} "Delete"]])))

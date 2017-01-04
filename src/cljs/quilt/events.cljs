@@ -84,6 +84,11 @@
  (fn [db [_]]
    (update-in db [:editor :debug?] not)))
 
+(rf/reg-event-db
+ :toggle-readonly
+ (fn [db [_]]
+   (update-in db [:editor :readonly?] not)))
+
 
 ;; Position tracking
 ;; =============================================================================

@@ -96,15 +96,16 @@ span.label {
 
 #editor-type > select {
     margin-left: 10px;
+    margin-right: 10px;
+}
+
+.editor-options-checkbox {
+    margin-left: 10px;
 }
 
 #library > select {
     margin-left: 5px;
     margin-right: 5px;
-}
-
-#debug-toggle {
-    margin-left: 25px;
 }
 
 #debug > h2 {

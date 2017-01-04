@@ -68,7 +68,8 @@
     (fn []
       (when (= :source (:type @editor-atom))
         [:div#source-editor
-         [:textarea {:value @source-atom
+         [:textarea {:readOnly (:readonly? @editor-atom)
+                     :value @source-atom
                      :on-change #(rf/dispatch [:set-source (get-value %)])}]
          [:div.container
           [:button {:on-click eval-code} "Eval"]
@@ -88,10 +89,17 @@
                   :on-change select-editor}
          [:option "Visual"]
          [:option "Source"]]]
+       [:div#readonly-toggle
+        [:input.editor-options-checkbox
+         {:type "checkbox"
+          :checked (:readonly? @editor-atom)
+          :on-change #(rf/dispatch [:toggle-readonly])}]
+        "Read only?"]
        [:div#debug-toggle
-        [:input {:type "checkbox"
-                 :checked (:debug? @editor-atom)
-                 :on-change #(rf/dispatch [:toggle-debug])}]
+        [:input.editor-options-checkbox
+         {:type "checkbox"
+          :checked (:debug? @editor-atom)
+          :on-change #(rf/dispatch [:toggle-debug])}]
         "Show debug?"]])))
 
 (defn- library []

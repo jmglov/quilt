@@ -19,7 +19,6 @@ In no particular order:
 * Nicer styling
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
-* Readonly mode so friends can look but not touch
 * Functional mode
 * ClojureScript eval
 

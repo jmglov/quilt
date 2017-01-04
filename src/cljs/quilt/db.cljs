@@ -4,8 +4,9 @@
   {:code []
    :source ""
    :editor {:type :visual
+            :selected-index nil
             :debug? false
-            :selected-index nil}
+            :readonly? false}
    :mouse {:locked? false
            :pos [0 0]}
    :sketch {:name "sketch"
