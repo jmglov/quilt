@@ -69,6 +69,12 @@ span.label {
     background-color: #ffff80;
 }
 
+.delete-form {
+    color: red;
+    margin-left: auto;
+    vertical-align: center;
+}
+
 #modify-forms {
     margin-top: 10px;
 }

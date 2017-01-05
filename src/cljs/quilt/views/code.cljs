@@ -131,4 +131,4 @@
                     :rectangle (render-rectangle form readonly?)
                     :text (render-text form readonly?)
                     :triangle (render-triangle form readonly?))
-                  [[:button {:on-click #(delete-code form)} "Delete"]])))
+                  [[:div.delete-form {:on-click #(delete-code form)} "✖"]])))
