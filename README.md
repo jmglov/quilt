@@ -12,14 +12,14 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* Add polygons
-* Help text (mouseover?)
-* Give decent error messages when eval fails in the source editor
-* Nicer styling
+* Help text
+* Read drawing name from query params
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
+* Give decent error messages when eval fails in the source editor
+* Nicer styling
 * Functional mode
-* ClojureScript eval
+* ClojureScript eval (maybe too dangerous?)
 
 If there's something you want to see, [open an issue](https://github.com/jmglov/quilt/issues)!
 
