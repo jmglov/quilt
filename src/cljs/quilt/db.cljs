@@ -11,5 +11,6 @@
            :pos [0 0]}
    :sketch {:name "sketch"
             :size [500 500]
+            :lo-res? false
             :bg-color [235 235 224]
             :fg-color [0 0 0]}})

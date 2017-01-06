@@ -120,3 +120,9 @@
  (fn [db [_ width height]]
    (println "Setting sketch size:" width height)
    (assoc-in db [:sketch :size] [width height])))
+
+(rf/reg-event-db
+ :toggle-lo-res
+ (fn [db [_]]
+   (let [lo-res? (not (get-in db [:sketch :lo-res?]))]
+     (assoc-in db [:sketch :lo-res?] lo-res?))))

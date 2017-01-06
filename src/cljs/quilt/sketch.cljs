@@ -8,18 +8,16 @@
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
 
-(defn set-color! [c]
+(defn- set-color! [c]
   (let [[r g b] (if (keyword? c) (q.color/color c) c)]
     (q/fill r g b)
     (q/stroke r g b)))
 
 (defn- clear! [sketch]
-  (let [{:keys [size bg-color]} sketch
-        [w h] size]
-    (set-color! bg-color)
-    (q/rect 0 0 w h)))
+  (let [{:keys [bg-color]} sketch]
+    (apply q/background bg-color)))
 
-(defn draw-circle! [[x y] radius color]
+(defn- draw-circle! [[x y] radius color]
   (set-color! color)
   (let [circumference (* 2 radius)]
     (q/ellipse x y circumference circumference)))
@@ -31,7 +29,7 @@
     :left [[0 y1] [0 y2]]
     :right [[w y1] [w y2]]))
 
-(defn draw-curve!
+(defn- draw-curve!
   [[[x1 y1] [x2 y2] :as position] orientation thickness color sketch-size]
   (let [[[cx1 cy1] [cx2 cy2]] (curve-control-points position
                                                     orientation
@@ -43,24 +41,24 @@
     (q/stroke-weight 1)
     (q/fill :black)))
 
-(defn draw-line!
+(defn- draw-line!
   [[[x1 y1] [x2 y2]] thickness color]
   (q/stroke-weight thickness)
   (apply q/stroke (q.color/color color))
   (q/line x1 y1 x2 y2)
   (q/stroke-weight 1))
 
-(defn draw-rectangle! [[x y] width height color]
+(defn- draw-rectangle! [[x y] width height color]
   (set-color! color)
   (q/rect x y width height))
 
-(defn draw-text! [text [x y] size color]
+(defn- draw-text! [text [x y] size color]
   (set-color! color)
   (q/text-size size)
   (q/text-align :center :center)
   (q/text text x y))
 
-(defn draw-triangle!
+(defn- draw-triangle!
   [[[x1 y1] [x2 y2] [x3 y3]] color]
   (set-color! color)
   (q/triangle x1 y1 x2 y2 x3 y3))
@@ -132,24 +130,20 @@
   []
   (let [code-atom (rf/subscribe [:code])
         sketch-atom (rf/subscribe [:sketch])
-        sketch-args {:host (:name @sketch-atom)
-                     :size (:size @sketch-atom)
-                     :setup (partial setup sketch-atom)
-                     :draw (partial draw! sketch-atom code-atom)}
-        canvas-id (do
-                    (assert (contains? sketch-args :host))
-                    (:host sketch-args))
-        canvas-tag-&-id (keyword (str "canvas#" canvas-id))]
+        canvas-id (:name @sketch-atom)
+        canvas-tag-&-id (keyword (str "canvas#" canvas-id))
+        sketch-size #(:size @sketch-atom)]
     [r/create-class
      {:reagent-render
       (fn []
-        [canvas-tag-&-id {:style {:max-width (get-in @sketch-atom [:size 0])
-                                  :max-height (get-in @sketch-atom [:size 1])}
-                          :width (get-in @sketch-atom [:size 0])
-                          :height (get-in @sketch-atom [:size 1])
-                          :on-click #(rf/dispatch [:lock-mouse-pos])
-                          :on-mouseMove #(rf/dispatch [:set-mouse-pos
-                                                       (get-mouse-pos %)])}])
+        (let [[w h] (sketch-size)]
+          [canvas-tag-&-id {:style {:max-width w
+                                    :max-height h}
+                            :width w
+                            :height h
+                            :on-click #(rf/dispatch [:lock-mouse-pos])
+                            :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                                         (get-mouse-pos %)])}]))
 
       :component-did-mount
       (fn []
@@ -158,10 +152,12 @@
         ;; (Needed on initial render; not on
         ;; re-render.)
         (a/go
-          (println "Attaching sketch")
-          (apply q/sketch
-                 (apply concat (assoc sketch-args
-                                      :size (:size @sketch-atom))))))
+          (let [size (sketch-size)
+                sketch-args [:host canvas-id
+                             :size (sketch-size)
+                             :setup (partial setup sketch-atom)
+                             :draw (partial draw! sketch-atom code-atom)]]
+            (apply q/sketch sketch-args))))
 
       :component-will-unmount
       (fn []

@@ -12,13 +12,13 @@
                      :color]}
    :curve {:defaults {:position [[0 0] [0 0]]
                       :orientation :down
-                      :thickness 10}
+                      :thickness 1}
            :params [:position
                     :orientation
                     :thickness
                     :color]}
    :line {:defaults {:position [[0 0] [0 0]]
-                     :thickness 10}
+                     :thickness 1}
           :params [:position
                    :thickness
                    :color]}

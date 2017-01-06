@@ -13,7 +13,6 @@ http://jmglov.net/quilt/
 In no particular order:
 
 * Add polygons
-* Lo-res mode (chunky pixels) for younger students
 * Help text (mouseover?)
 * Give decent error messages when eval fails in the source editor
 * Nicer styling

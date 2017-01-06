@@ -5,6 +5,7 @@
             [quilt.code :as code]
             [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
+            [quilt.sketch.resolution :as resolution]
             [quilt.util :refer [concatv get-value]]
             [quilt.views.code :as views.code]
             [quilt.views.widgets :as widgets]
@@ -14,42 +15,58 @@
 (defn- clear-code []
   (rf/dispatch [:clear-code]))
 
-(defn- set-sketch-size [width height]
-  (rf/dispatch [:set-sketch-size width height]))
+(defn- set-sketch-size [sketch-atom width height]
+  (rf/dispatch [:set-sketch-size
+                (resolution/scale @sketch-atom width)
+                (resolution/scale @sketch-atom height)]))
 
 (defn- sketch-size []
-  (let [sketch-atom (rf/subscribe [:sketch])]
+  (let [sketch-atom (rf/subscribe [:sketch])
+        set-size #(set-sketch-size sketch-atom %1 %2)]
     (fn []
-      (concatv [:div.container
-                [:span.label "Drawing size"]]
-               (let [[width height] (:size @sketch-atom)]
-                 [[:div
-                   "["
-                   (widgets/input-num #(set-sketch-size % height)
-                                      3 (str width))
-                   " "
-                   (widgets/input-num #(set-sketch-size width %)
-                                      3 (str height))
-                   "]"]])))))
+      (concatv [:div#sketch-options]
+               [(concatv [:div.container
+                          [:span.label "Drawing size"]]
+                         (let [[width height]
+                               (resolution/display @sketch-atom
+                                                   (:size @sketch-atom))]
+                           [[:div
+                             "["
+                             (widgets/input-num #(set-size % height)
+                                                3 (str width))
+                             " "
+                             (widgets/input-num #(set-size width %)
+                                                3 (str height))
+                             "]"]]))]
+               [[:div#lo-res
+                 [:input.lo-res-checkbox
+                  {:type "checkbox"
+                   :checked (:lo-res? @sketch-atom)
+                   :on-change #(rf/dispatch [:toggle-lo-res])}]
+                 "Low resolution?"]]))))
 
 (defn- mouse-pos []
-  (let [mouse-atom (rf/subscribe [:mouse])]
+  (let [mouse-atom (rf/subscribe [:mouse])
+        sketch-atom (rf/subscribe [:sketch])]
     (fn []
       [:div#mouse-pos
        [:span.label "Current position"]
-       (let [[x y] (:pos @mouse-atom)]
-         [:span (str "[" x " " y "]")])])))
+       (let [[x y] (:pos @mouse-atom)
+             display #(resolution/display @sketch-atom %)]
+         [:span (str "[" (display x) " " (display y) "]")])])))
 
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])
+        sketch-atom (rf/subscribe [:sketch])
         new-fun (r/atom (key (first code/functions)))
         add-code #(rf/dispatch [:add-code (code/create-form @new-fun)])]
     (fn []
       (when (= :visual (:type @editor-atom))
         [:div
          (concatv [:div#forms.outlined]
-                  (map #(views.code/render % editor-atom) @code-atom))
+                  (map #(views.code/render % editor-atom @sketch-atom)
+                       @code-atom))
          [:div#modify-forms.container
           [:div.outlined
            (concatv
@@ -105,7 +122,6 @@
 (defn- library []
   (let [sketch-name (r/atom (first (keys library/sketches)))
         set-sketch #(reset! sketch-name (keyword (get-value %)))]
-    (println (keys library/sketches))
     (fn []
       [:div#library.container
        "Load drawing:"
