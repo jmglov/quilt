@@ -27,13 +27,16 @@
   (input-assoc size form path identity "" identity identity))
 
 (defn- color-picker [form]
-  (util/concatv
-   [:select
-    {:value (str (:color form))
-     :on-change #(let [new-color (read-string (util/get-value %))]
-                   (replace-code (assoc form :color new-color)))}]
-   (map (fn [c] [:option (str c)])
-        color/basic)))
+  (let [colors (-> color/basic
+                   (conj (:color form))
+                   set
+                   sort)]
+    (util/concatv
+     [:select
+      {:value (str (:color form))
+       :on-change #(let [new-color (read-string (util/get-value %))]
+                     (replace-code (assoc form :color new-color)))}]
+     (map (fn [c] [:option (str c)]) colors))))
 
 (defn- orientation-picker [form]
   (util/concatv
