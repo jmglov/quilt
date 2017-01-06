@@ -55,7 +55,7 @@
 (defn- draw-text! [text [x y] size color]
   (set-color! color)
   (q/text-size size)
-  (q/text-align :center :center)
+  (q/text-align :center :top)
   (q/text text x y))
 
 (defn- draw-triangle!
