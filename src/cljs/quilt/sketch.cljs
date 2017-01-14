@@ -1,16 +1,8 @@
 (ns quilt.sketch
   (:require [clojure.string :as string]
-            [goog.dom :as dom]
-            [quilt.color :as q.color :refer [->html-color]]
+            [quilt.color :refer [->html-color]]
             [quilt.util :refer [concatv]]
-            [re-frame.core :as rf]
-            [reagent.core :as r])
-  (:require-macros [cljs.core.async.macros :as a]))
-
-(defn- set-color! [c]
-  #_(let [[r g b] (if (keyword? c) (q.color/color c) c)]
-      (q/fill r g b)
-      (q/stroke r g b)))
+            [re-frame.core :as rf]))
 
 (defn- make-circle [[x y] radius color]
   [:circle {:cx x
@@ -38,32 +30,33 @@
       (q/stroke-weight 1)
       (q/fill :black)))
 
-(defn- draw-line!
+(defn- make-line
   [[[x1 y1] [x2 y2]] thickness color]
-  #_(do
-      (q/stroke-weight thickness)
-      (apply q/stroke (q.color/color color))
-      (q/line x1 y1 x2 y2)
-      (q/stroke-weight 1)))
+  [:line {:x1 x1, :y1 y1
+          :x2 x2, :y2 y2
+          :stroke (->html-color color)
+          :stoke-width thickness}])
 
 (defn- make-rectangle [[x y] width height color]
-  [:rect {:width width
-          :height height
+  [:rect {:x x, :y y
+          :width width, :height height
           :fill (->html-color color)
           :stroke-width 0}])
 
 (defn- make-text [text [x y] size color]
-  [:text {:x x
-          :y y
+  [:text {:x x, :y y
           :font-size size
           :fill (->html-color color)
           :text-anchor :middle}
    text])
 
-(defn- draw-triangle!
-  [[[x1 y1] [x2 y2] [x3 y3]] color]
-  (set-color! color)
-  #_(q/triangle x1 y1 x2 y2 x3 y3))
+(defn- make-triangle
+  [position color]
+  (let [points (->> position
+                    (map #(string/join "," %))
+                    (string/join " "))]
+    [:polygon {:points points
+               :fill (->html-color color)}]))
 
 (defn- ->shape [{:keys [fun color] :as form}]
   (case fun
@@ -78,7 +71,7 @@
 
     :line
     (let [{:keys [position thickness]} form]
-      (draw-line! position thickness color))
+      (make-line position thickness color))
 
     :rectangle
     (let [{:keys [position width height]} form]
@@ -90,7 +83,7 @@
 
     :triangle
     (let [{:keys [position]} form]
-      (draw-triangle! position color))
+      (make-triangle position color))
 
     nil))
 
