@@ -97,7 +97,7 @@ span.label {
     margin-left: 10px;
 }
 
-#source-editor > textarea {
+.editor > textarea {
     width: 100%;
     height: 100px;
 }

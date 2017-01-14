@@ -10,6 +10,8 @@
 (defn concatv [& vs]
   (into [] (apply concat vs)))
 
+(defn consv [x xs]
+  (into [] (cons x xs)))
 
 ;; Styling
 ;; -----------------------------------------------------------------------------

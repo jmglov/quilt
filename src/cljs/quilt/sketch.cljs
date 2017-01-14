@@ -94,6 +94,9 @@
 (defn- get-mouse-pos [event]
   (util/relative-position event (util/get-element "sketch")))
 
+(defn create-shapes [code]
+  (mapv ->shape code))
+
 (defn sketch []
   (let [code-atom (rf/subscribe [:code])
         sketch-atom (rf/subscribe [:sketch])]
@@ -106,4 +109,4 @@
                        :on-mouseMove #(rf/dispatch [:set-mouse-pos
                                                     (get-mouse-pos %)])}
           (make-rectangle [0 0] width height (:bg-color @sketch-atom))]
-         (mapv ->shape @code-atom))))))
+         (create-shapes @code-atom))))))

@@ -6,7 +6,7 @@
             [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
             [quilt.sketch.resolution :as resolution]
-            [quilt.util :refer [concatv get-value]]
+            [quilt.util :refer [concatv consv get-value]]
             [quilt.views.code :as views.code]
             [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]
@@ -70,7 +70,7 @@
                     (rf/dispatch [:show-docstring-new-form]))]
     (fn []
       (when (= :visual (:type @editor-atom))
-        [:div
+        [:div#visual-editor
          (concatv [:div#forms.outlined]
                   (map #(views.code/render % editor-atom @sketch-atom)
                        @code-atom))
@@ -91,7 +91,7 @@
         eval-code #(rf/dispatch [:eval-code])]
     (fn []
       (when (= :source (:type @editor-atom))
-        [:div#source-editor
+        [:div#source-editor.editor
          [:textarea {:readOnly (:readonly? @editor-atom)
                      :value @source-atom
                      :on-change #(rf/dispatch [:set-source (get-value %)])}]
@@ -99,6 +99,25 @@
           [:button {:on-click eval-code} "Eval"]
           [:button {:on-click #(rf/dispatch [:set-source ""])}
            "Clear"]]]))))
+
+(defn- forms-editor []
+  (let [code-atom (rf/subscribe [:code])
+        editor-atom (rf/subscribe [:editor])]
+    (fn []
+      (when (= :forms (:type @editor-atom))
+        [:div#forms-editor.editor
+         [:textarea {:readOnly true
+                     :value (with-out-str (pprint @code-atom))}]]))))
+
+(defn- svg-editor []
+  (let [code-atom (rf/subscribe [:code])
+        editor-atom (rf/subscribe [:editor])]
+    (fn []
+      (when (= :svg (:type @editor-atom))
+        (let [shapes (consv :svg (sketch/create-shapes @code-atom))]
+          [:div#svg-editor.editor
+           [:textarea {:readOnly true
+                       :value (with-out-str (pprint shapes))}]])))))
 
 (defn- editor-options []
   (let [editor-atom (rf/subscribe [:editor])
@@ -109,10 +128,15 @@
       [:div#editor-options.container
        [:div#editor-type
         "Editor:"
-        [:select {:value (string/capitalize (name (:type @editor-atom)))
+        [:select {:value (let [type (:type @editor-atom)]
+                           (if (= :svg type)
+                             "SVG"
+                             (string/capitalize (name type))))
                   :on-change select-editor}
          [:option "Visual"]
-         [:option "Source"]]]
+         [:option "Source"]
+         [:option "SVG"]
+         [:option "Forms"]]]
        [:div#readonly-toggle
         [:input.editor-options-checkbox
          {:type "checkbox"
@@ -168,6 +192,8 @@
       [:h2 "Code"]
       [visual-editor]
       [source-editor]
+      [forms-editor]
+      [svg-editor]
       [editor-options]
       [library]
       [debug]]]))
