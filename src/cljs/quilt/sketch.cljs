@@ -7,9 +7,6 @@
             [reagent.core :as r])
   (:require-macros [cljs.core.async.macros :as a]))
 
-(defn- hex-color [[r g b]]
-  (str "#" (.toString r 16) (.toString g 16) (.toString b 16)))
-
 (defn- set-color! [c]
   #_(let [[r g b] (if (keyword? c) (q.color/color c) c)]
       (q/fill r g b)
@@ -54,7 +51,7 @@
 (defn- rectangle [[x y] width height color]
   [:rect {:width width
           :height height
-          :style {:fill (hex-color color)
+          :style {:fill (q.color/->html-color color)
                   :stroke-width 0}}])
 
 (defn- draw-text! [text [x y] size color]
@@ -68,36 +65,34 @@
   (set-color! color)
   #_(q/triangle x1 y1 x2 y2 x3 y3))
 
-(defn- draw! [sketch-atom code-atom]
-  (clear! @sketch-atom)
-  (doseq [{:keys [fun color] :as form} @code-atom]
-    (case fun
-      :circle
-      (let [{:keys [position radius]} form]
-        (draw-circle! position radius color))
+(defn- ->shape [{:keys [fun color] :as form}]
+  (case fun
+    :circle
+    (let [{:keys [position radius]} form]
+      (draw-circle! position radius color))
 
-      :curve
-      (let [{:keys [position thickness orientation]} form]
-        (draw-curve! position orientation thickness color
-                     (:size @sketch-atom)))
+    :curve
+    (let [{:keys [position thickness orientation]} form]
+      #_(draw-curve! position orientation thickness color
+                   (:size @sketch-atom)))
 
-      :line
-      (let [{:keys [position thickness]} form]
-        (draw-line! position thickness color))
+    :line
+    (let [{:keys [position thickness]} form]
+      (draw-line! position thickness color))
 
-      :rectangle
-      (let [{:keys [position width height]} form]
-        (rectangle position width height color))
+    :rectangle
+    (let [{:keys [position width height]} form]
+      (rectangle position width height color))
 
-      :text
-      (let [{:keys [text position size]} form]
-        (draw-text! text position size color))
+    :text
+    (let [{:keys [text position size]} form]
+      (draw-text! text position size color))
 
-      :triangle
-      (let [{:keys [position]} form]
-        (draw-triangle! position color))
+    :triangle
+    (let [{:keys [position]} form]
+      (draw-triangle! position color))
 
-      nil)))
+    nil))
 
 (defn- get-mouse-pos [event]
   (let [canvas-rect (.getBoundingClientRect (.-target event))
@@ -110,9 +105,13 @@
         sketch-atom (rf/subscribe [:sketch])]
     (fn []
       (let [[width height] (:size @sketch-atom)]
-        [:svg {:width width
-               :height height
-               :on-click #(rf/dispatch [:lock-mouse-pos])
-               :on-mouseMove #(rf/dispatch [:set-mouse-pos
-                                            (get-mouse-pos %)])}
-         (rectangle [0 0] width height (:bg-color @sketch-atom))]))))
+        (concatv
+         [:svg {:width width
+                :height height
+                :on-click #(rf/dispatch [:lock-mouse-pos])
+                :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                             (get-mouse-pos %)])}
+          (rectangle [0 0] width height (:bg-color @sketch-atom))]
+         (do
+           (println "Rendering code:" @code-atom)
+           (mapv ->shape @code-atom)))))))
