@@ -1,5 +1,6 @@
 (ns quilt.events
   (:require [quilt.code :as code]
+            [quilt.config :as config]
             [quilt.db :as db]
             [quilt.library :as library]
             [re-frame.core :as rf]))
@@ -130,7 +131,9 @@
  :load-sketch
  (fn [db [_ sketch-name]]
    (println "Loading sketch:" sketch-name)
-   (update-code db (code/add-forms [] (library/sketches sketch-name)))))
+   (-> db
+       (update-code (code/add-forms [] (library/sketches sketch-name)))
+       (assoc-in [:sketch :size] config/default-sketch-size))))
 
 (rf/reg-event-db
  :set-sketch-size

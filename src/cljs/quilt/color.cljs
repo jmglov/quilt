@@ -163,3 +163,12 @@
    :black [0 0 0]
    :light-sea-green [32 178 170]
    :light-yellow [255 255 224]})
+
+(defn ->html-color [c]
+  (if (vector? c)
+    (let [[r g b] c]
+      (str "#"
+           (.toString r 16)
+           (.toString g 16)
+           (.toString b 16)))
+    (name c)))

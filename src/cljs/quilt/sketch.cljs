@@ -1,108 +1,95 @@
 (ns quilt.sketch
-  (:require [cljs.core.async :as a]
-            [goog.dom :as dom]
-            [quil.core :as q :include-macros true]
-            [quil.sketch :as q.sketch]
-            [quilt.color :as q.color]
-            [re-frame.core :as rf]
-            [reagent.core :as r])
-  (:require-macros [cljs.core.async.macros :as a]))
+  (:require [clojure.string :as string]
+            [quilt.color :refer [->html-color]]
+            [quilt.util :refer [concatv]]
+            [re-frame.core :as rf]))
 
-(defn- set-color! [c]
-  (let [[r g b] (if (keyword? c) (q.color/color c) c)]
-    (q/fill r g b)
-    (q/stroke r g b)))
+;; http://stackoverflow.com/a/18473154/58994
 
-(defn- clear! [sketch]
-  (let [{:keys [bg-color]} sketch]
-    (apply q/background bg-color)))
+(defn- polar->cartesian [[x y] radius angle-deg]
+  (let [angle-rad (/ (* (- angle-deg 90) Math/PI) 180.0)]
+    [(+ x (int (* radius (Math/cos angle-rad))))
+     (+ y (int (* radius (Math/sin angle-rad))))]))
 
-(defn- draw-circle! [[x y] radius color]
-  (set-color! color)
-  (let [circumference (* 2 radius)]
-    (q/ellipse x y circumference circumference)))
+(defn- make-circle [[x y] radius color]
+  [:circle {:cx x
+            :cy y
+            :r radius
+            :fill (->html-color color)
+            :stroke-width 0}])
 
-(defn- curve-control-points [[[x1 y1] [x2 y2]] orientation [w h]]
-  (case orientation
-    :down [[x1 0] [x2 0]]
-    :up [[x1 h] [x2 h]]
-    :left [[0 y1] [0 y2]]
-    :right [[w y1] [w y2]]))
+(defn- make-curve
+  [pos radius orientation thickness color]
+  (let [[angle1 angle2] (case orientation
+                          :down [270 90]
+                          :left [0 180]
+                          :right [180 0]
+                          :up [90 270])
+        [x1 y1] (polar->cartesian pos radius angle1)
+        [x2 y2] (polar->cartesian pos radius angle2)
+        arc-flag "0"]
+    [:path {:stroke (->html-color color)
+            :stroke-width thickness
+            :fill-opacity 0
+            :d (->> ["M" x1 y1
+                     "A" radius radius 0 arc-flag 0 x2 y2]
+                    (string/join " "))}]))
 
-(defn- draw-curve!
-  [[[x1 y1] [x2 y2] :as position] orientation thickness color sketch-size]
-  (let [[[cx1 cy1] [cx2 cy2]] (curve-control-points position
-                                                    orientation
-                                                    sketch-size)]
-    (q/no-fill)
-    (q/stroke-weight thickness)
-    (apply q/stroke (q.color/color color))
-    (q/curve x1 cy1 x1 y1 x2 y2 cx2 cy2)
-    (q/stroke-weight 1)
-    (q/fill :black)))
-
-(defn- draw-line!
+(defn- make-line
   [[[x1 y1] [x2 y2]] thickness color]
-  (q/stroke-weight thickness)
-  (apply q/stroke (q.color/color color))
-  (q/line x1 y1 x2 y2)
-  (q/stroke-weight 1))
+  [:line {:x1 x1, :y1 y1
+          :x2 x2, :y2 y2
+          :stroke (->html-color color)
+          :stoke-width thickness}])
 
-(defn- draw-rectangle! [[x y] width height color]
-  (set-color! color)
-  (q/rect x y width height))
+(defn- make-rectangle [[x y] width height color]
+  [:rect {:x x, :y y
+          :width width, :height height
+          :fill (->html-color color)
+          :stroke-width 0}])
 
-(defn- draw-text! [text [x y] size color]
-  (set-color! color)
-  (q/text-size size)
-  (q/text-align :center :top)
-  (q/text text x y))
+(defn- make-text [text [x y] size color]
+  [:text {:x x, :y y
+          :font-size size
+          :fill (->html-color color)
+          :text-anchor :middle}
+   text])
 
-(defn- draw-triangle!
-  [[[x1 y1] [x2 y2] [x3 y3]] color]
-  (set-color! color)
-  (q/triangle x1 y1 x2 y2 x3 y3))
+(defn- make-triangle
+  [position color]
+  (let [points (->> position
+                    (map #(string/join "," %))
+                    (string/join " "))]
+    [:polygon {:points points
+               :fill (->html-color color)}]))
 
-(defn- setup [sketch-atom]
-  (let [{:keys [bg-color fg-color]} @sketch-atom]
-    (println "Setting up sketch")
-    (println "Background color:" bg-color)
-    (println "Foreground color:" fg-color)
-    (clear! @sketch-atom)
-    (set-color! fg-color)
-    (q/stroke-cap :square)
-    (q/frame-rate 1)))
+(defn- ->shape [{:keys [fun color] :as form}]
+  (case fun
+    :circle
+    (let [{:keys [position radius]} form]
+      (make-circle position radius color))
 
-(defn- draw! [sketch-atom code-atom]
-  (clear! @sketch-atom)
-  (doseq [{:keys [fun color] :as form} @code-atom]
-    (case fun
-      :circle
-      (let [{:keys [position radius]} form]
-        (draw-circle! position radius color))
+    :curve
+    (let [{:keys [position radius thickness orientation]} form]
+      (make-curve position radius orientation thickness color))
 
-      :curve
-      (let [{:keys [position thickness orientation]} form]
-        (draw-curve! position orientation thickness color
-                     (:size @sketch-atom)))
+    :line
+    (let [{:keys [position thickness]} form]
+      (make-line position thickness color))
 
-      :line
-      (let [{:keys [position thickness]} form]
-        (draw-line! position thickness color))
+    :rectangle
+    (let [{:keys [position width height]} form]
+      (make-rectangle position width height color))
 
-      :rectangle
-      (let [{:keys [position width height]} form]
-        (draw-rectangle! position width height color))
+    :text
+    (let [{:keys [text position size]} form]
+      (make-text text position size color))
 
-      :text
-      (let [{:keys [text position size]} form]
-        (draw-text! text position size color))
+    :triangle
+    (let [{:keys [position]} form]
+      (make-triangle position color))
 
-      :triangle
-      (let [{:keys [position]} form]
-        (draw-triangle! position color))
-
-      nil)))
+    nil))
 
 (defn- get-mouse-pos [event]
   (let [canvas-rect (.getBoundingClientRect (.-target event))
@@ -110,57 +97,16 @@
         y (- (.-clientY event) (.-top canvas-rect))]
     [x y]))
 
-;; https://github.com/simon-katz/nomisdraw/blob/for-quil-api-request/src/cljs/nomisdraw/utils/nomis_quil_on_reagent.cljs
-
-(defn sketch
-  "Wraps `quil.core/sketch` and plays nicely with Reagent.
-  Below, C = the canvas that will host the sketch.
-  Differs from `quil.core/sketch` as follows:
-  - Creates C (rather than C having to be created separately), and the
-   `:host` argument is the id of the canvas that will be created (rather
-    than the id of an already-existing canvas).
-  - Returns a component that wraps C.
-  - The :size argument must be either `nil` or a [width height] vector."
-  ;; Thoughts on the canvas id:
-  ;; (1) You might think we could create our own unique canvas id.
-  ;;     But no -- that would break re-rendering.
-  ;; (2) You might think this could be done with a macro that creates the
-  ;;     canvas id at compile time.
-  ;;     But no -- the same call site can create multiple sketches.
-  []
+(defn sketch []
   (let [code-atom (rf/subscribe [:code])
-        sketch-atom (rf/subscribe [:sketch])
-        canvas-id (:name @sketch-atom)
-        canvas-tag-&-id (keyword (str "canvas#" canvas-id))
-        sketch-size #(:size @sketch-atom)]
-    [r/create-class
-     {:reagent-render
-      (fn []
-        (let [[w h] (sketch-size)]
-          [canvas-tag-&-id {:style {:max-width w
-                                    :max-height h}
-                            :width w
-                            :height h
-                            :on-click #(rf/dispatch [:lock-mouse-pos])
-                            :on-mouseMove #(rf/dispatch [:set-mouse-pos
-                                                         (get-mouse-pos %)])}]))
-
-      :component-did-mount
-      (fn []
-        ;; Use a go block so that the canvas exists
-        ;; before we attach the sketch to it.
-        ;; (Needed on initial render; not on
-        ;; re-render.)
-        (a/go
-          (let [size (sketch-size)
-                sketch-args [:host canvas-id
-                             :size (sketch-size)
-                             :setup (partial setup sketch-atom)
-                             :draw (partial draw! sketch-atom code-atom)]]
-            (apply q/sketch sketch-args))))
-
-      :component-will-unmount
-      (fn []
-        (-> canvas-id
-            dom/getElement
-            q.sketch/destroy-previous-sketch))}]))
+        sketch-atom (rf/subscribe [:sketch])]
+    (fn []
+      (let [[width height] (:size @sketch-atom)]
+        (concatv
+         [:svg {:width width
+                :height height
+                :on-click #(rf/dispatch [:lock-mouse-pos])
+                :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                             (get-mouse-pos %)])}
+          (make-rectangle [0 0] width height (:bg-color @sketch-atom))]
+         (mapv ->shape @code-atom))))))

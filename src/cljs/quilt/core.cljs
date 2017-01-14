@@ -1,6 +1,5 @@
 (ns quilt.core
-  (:require [quil.core :as q :include-macros true]
-            [quil.middleware :as q.middleware]
+  (:require [cljs.core]
             [quilt.config :as config]
             [quilt.events]
             [quilt.subs]
@@ -9,22 +8,14 @@
             [reagent.core :as reagent]))
 
 (defn dev-setup []
-  (when false
+  (if config/debug?
     (enable-console-print!)
-    (println "dev mode")))
+    (set! cljs.core/*print-fn* (fn [& _]))))
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/main-panel]
                   (.getElementById js/document "app")))
-
-(defn- quil-setup []
-  {})
-
-(defn- quil-update [state]
-  state)
-
-(defn- quil-draw! [state])
 
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
