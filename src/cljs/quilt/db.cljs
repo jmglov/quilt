@@ -4,6 +4,7 @@
   {:code []
    :source ""
    :editor {:type :visual
+            :docstring-index nil
             :selected-index nil
             :debug? false
             :readonly? false}

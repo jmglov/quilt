@@ -7,38 +7,44 @@
 (def functions
   {:circle {:defaults {:position [0 0]
                        :radius 0}
-            :params [:position
-                     :radius
-                     :color]}
+            :doc "Creates a circle around a central point"
+            :params [[:position "Centre point of as a vector of [x y]"]
+                     [:radius "Radius as a number"]
+                     [:color "Color as a vector of [red green blue]"]]}
    :curve {:defaults {:position [[0 0] [0 0]]
                       :orientation :down
                       :thickness 1}
-           :params [:position
-                    :orientation
-                    :thickness
-                    :color]}
+           :doc "Creates a curve from a starting point to an ending point"
+           :params [[:position "Starting and ending points as vector of [[x1 y1] [x2 y2]"]
+                    [:orientation "One of :up, :down, :left, or :right"]
+                    [:thickness "Thickness as a number"]
+                    [:color "Color as a vector of [red green blue]"]]}
    :line {:defaults {:position [[0 0] [0 0]]
                      :thickness 1}
-          :params [:position
-                   :thickness
-                   :color]}
+          :doc "Creates a line from a starting point to an ending point"
+          :params [[:position "Starting and ending points as vector of [[x1 y1] [x2 y2]"]
+                   [:thickness "Thickness as a number"]
+                   [:color "Color as a vector of [red green blue]"]]}
    :rectangle {:defaults {:position [0 0]
                           :width 0
                           :height 0}
-               :params [:position
-                        :width
-                        :height
-                        :color]}
+               :doc "Creates a rectangle from an upper left corner point"
+               :params [[:position "Upper left corner as a vector of [x y]"]
+                        [:width "Width as a number"]
+                        [:height "Height as a number"]
+                        [:color "Color as a vector of [red green blue]"]]}
    :text {:defaults {:position [0 0]
                      :text ""
                      :size 24}
-          :params [:position
-                   :text
-                   :size
-                   :color]}
+          :doc "Creates some text at a top center point"
+          :params [[:position "Top centre as a vector of [x y]"]
+                   [:text "Text to display"]
+                   [:size "Text size as a number"]
+                   [:color "Color as a vector of [red green blue]"]]}
    :triangle {:defaults {:position [[0 0] [0 0] [0 0]]}
-              :params [:position
-                       :color]}})
+              :doc "Creates a triangle with three corner points"
+              :params [[:position "Three points as vector of [[x1 y1] [x2 y2] [x3 y3]]"]
+                       [:color "Color as a vector of [red green blue]"]]}})
 
 (def orientations [:down
                    :up
@@ -91,7 +97,7 @@
   form
   (str "(" (name fun) " "
        (->> (get-in functions [fun :params])
-            (map #(pr-str (form %)))
+            (map #(pr-str (form (first %))))
             (string/join " "))
        ")"))
 
@@ -103,7 +109,7 @@
 (defn- read-line [line]
   (when-let [[fun & args] (read-string line)]
     (let [fun (keyword fun)
-          params (get-in functions [fun :params])]
+          params (map first (get-in functions [fun :params]))]
       (->> (interleave params args)
            (apply hash-map)
            (merge {:fun fun})))))
@@ -118,3 +124,9 @@
 
 (defn set-index [form index]
   (assoc form :index index))
+
+(defn last-index [forms]
+  (:index (last forms)))
+
+(defn docstring [fun]
+  (get-in functions [fun :doc]))

@@ -75,6 +75,12 @@ span.label {
     vertical-align: center;
 }
 
+.docstring {
+    background-color: #99ccff;
+    margin: 0px 25px 0px 30px;
+    padding-left: 5px;
+}
+
 #modify-forms {
     margin-top: 10px;
 }

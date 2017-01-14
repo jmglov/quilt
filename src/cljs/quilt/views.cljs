@@ -60,7 +60,9 @@
         editor-atom (rf/subscribe [:editor])
         sketch-atom (rf/subscribe [:sketch])
         new-fun (r/atom (key (first code/functions)))
-        add-code #(rf/dispatch [:add-code (code/create-form @new-fun)])]
+        add-code #(do
+                    (rf/dispatch [:add-code (code/create-form @new-fun)])
+                    (rf/dispatch [:show-docstring-new-form]))]
     (fn []
       (when (= :visual (:type @editor-atom))
         [:div

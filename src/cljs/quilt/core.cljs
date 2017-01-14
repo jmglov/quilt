@@ -9,7 +9,7 @@
             [reagent.core :as reagent]))
 
 (defn dev-setup []
-  (when true
+  (when false
     (enable-console-print!)
     (println "dev mode")))
 

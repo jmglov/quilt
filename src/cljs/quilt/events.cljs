@@ -61,6 +61,24 @@
  (fn [db [_]]
    (assoc-in db [:editor :selected-index] nil)))
 
+(defn- set-docstring-index [db index]
+  (println "Showing docstring for form at index:" index)
+  (assoc-in db [:editor :docstring-index] index))
+
+(rf/reg-event-db
+ :show-docstring
+ (fn [db [_ index]]
+   (set-docstring-index db index)))
+
+(rf/reg-event-db
+ :show-docstring-new-form
+ (fn [{:keys [code] :as db} [_]]
+   (set-docstring-index db (code/last-index code))))
+
+(rf/reg-event-db
+ :unset-docstring-index
+ (fn [db [_]]
+   (assoc-in db [:editor :docstring-index] nil)))
 
 ;; Source editor
 ;; =============================================================================

@@ -4,7 +4,7 @@
             [quilt.code :as code]
             [quilt.color :as color]
             [quilt.sketch.resolution :as resolution]
-            [quilt.util :as util]
+            [quilt.util :as util :refer [concatv]]
             [quilt.views.code.reorder :as reorder]
             [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]
@@ -31,7 +31,7 @@
                    (conj (:color form))
                    set
                    sort)]
-    (util/concatv
+    (concatv
      [:select
       {:value (str (:color form))
        :on-change #(let [new-color (read-string (util/get-value %))]
@@ -39,7 +39,7 @@
      (map (fn [c] [:option (str c)]) colors))))
 
 (defn- orientation-picker [form]
-  (util/concatv
+  (concatv
    [:select
     {:value (str (:orientation form))
      :on-change #(let [new-value (read-string (util/get-value %))]
@@ -125,17 +125,22 @@
         {:keys [readonly? selected-index]} @editor-atom
         css-classes (str "form unselectable container"
                          (when (= selected-index index) " selected-form"))]
-    (util/concatv [:div
-                   {:class css-classes}
-                   [:div.drag-handle
-                    {:on-mouse-down (when-not (:readonly? @editor-atom)
-                                      (reorder/mouse-down-handler form editor-atom))}
-                    "↕"]]
-                  (case fun
-                    :circle (render-circle form readonly? scale display)
-                    :curve (render-curve form readonly? scale display)
-                    :line (render-line form readonly? scale display)
-                    :rectangle (render-rectangle form readonly? scale display)
-                    :text (render-text form readonly? scale display)
-                    :triangle (render-triangle form readonly? scale display))
-                  [[:div.delete-form {:on-click #(delete-code form)} "✖"]])))
+    (concatv
+     [:div
+      (concatv
+       [:div
+        {:class css-classes}
+        [:div.drag-handle
+         {:on-mouse-down (when-not (:readonly? @editor-atom)
+                           (reorder/mouse-down-handler form editor-atom))}
+         "↕"]]
+       (case fun
+         :circle (render-circle form readonly? scale display)
+         :curve (render-curve form readonly? scale display)
+         :line (render-line form readonly? scale display)
+         :rectangle (render-rectangle form readonly? scale display)
+         :text (render-text form readonly? scale display)
+         :triangle (render-triangle form readonly? scale display))
+       [[:div.delete-form {:on-click #(delete-code form)} "✖"]])]
+     (when (= index (:docstring-index @editor-atom))
+       [[:div.docstring (code/docstring fun)]]))))
