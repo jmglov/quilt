@@ -4,7 +4,7 @@
   {:code []
    :source ""
    :editor {:type :visual
-            :docstring-index nil
+            :displayed-docstring nil
             :selected-index nil
             :debug? false
             :readonly? false}

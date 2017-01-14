@@ -22,7 +22,6 @@
         before? (fn [i]
                   (let [elem (nth form-elems i)
                         [_ y] (form-position elem)]
-                    (println "Form at index" i "y position:" y)
                     (when (and (not= i selected-index)
                                (<= mouse-y y))
                       (if (<= i selected-index) i (dec i)))))
