@@ -50,10 +50,15 @@
         sketch-atom (rf/subscribe [:sketch])]
     (fn []
       [:div#mouse-pos
-       [:span.label "Current position"]
-       (let [[x y] (:pos @mouse-atom)
-             display #(resolution/display @sketch-atom %)]
-         [:span (str "[" (display x) " " (display y) "]")])])))
+       {:on-click #(rf/dispatch [:lock-mouse-pos])}
+       [:div
+        [:span.label "Current position"]
+        (let [[x y] (:pos @mouse-atom)
+              display #(resolution/display @sketch-atom %)]
+          [:span (str "[" (display x) " " (display y) "]")])]
+       [:div (if (:locked? @mouse-atom)
+               "Click drawing to show moving"
+               "Click drawing to remember")]])))
 
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
