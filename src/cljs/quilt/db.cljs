@@ -1,4 +1,5 @@
-(ns quilt.db)
+(ns quilt.db
+  (:require [quilt.config :as config]))
 
 (def default-db
   {:code []
@@ -11,7 +12,7 @@
    :mouse {:locked? false
            :pos [0 0]}
    :sketch {:name "sketch"
-            :size [500 500]
+            :size config/default-sketch-size
             :lo-res? false
-            :bg-color [235 235 224]
+            :bg-color config/bg-color
             :fg-color [0 0 0]}})
