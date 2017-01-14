@@ -75,12 +75,11 @@
 
 (defn- render-curve [form readonly? scale display]
   (if readonly?
-    (render-readonly form [:orientation :thickness] display)
-    ["[["
-     (input-num 3 form [:position 0 0] scale display) " "
-     (input-num 3 form [:position 0 1] scale display) "] ["
-     (input-num 3 form [:position 1 0] scale display) " "
-     (input-num 3 form [:position 1 1] scale display) "]] "
+    (render-readonly form [:radius] display)
+    ["["
+     (input-num 3 form [:position 0] scale display) " "
+     (input-num 3 form [:position 1] scale display) "] "
+     (input-num 3 form [:radius] scale display) " "
      (orientation-picker form) " "
      (input-num 2 form [:thickness] scale display) " "
      (color-picker form)]))

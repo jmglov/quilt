@@ -4,6 +4,13 @@
             [quilt.util :refer [concatv]]
             [re-frame.core :as rf]))
 
+;; http://stackoverflow.com/a/18473154/58994
+
+(defn- polar->cartesian [[x y] radius angle-deg]
+  (let [angle-rad (/ (* (- angle-deg 90) Math/PI) 180.0)]
+    [(+ x (int (* radius (Math/cos angle-rad))))
+     (+ y (int (* radius (Math/sin angle-rad))))]))
+
 (defn- make-circle [[x y] radius color]
   [:circle {:cx x
             :cy y
@@ -11,24 +18,22 @@
             :fill (->html-color color)
             :stroke-width 0}])
 
-(defn- curve-control-points [[[x1 y1] [x2 y2]] orientation [w h]]
-  (case orientation
-    :down [[x1 0] [x2 0]]
-    :up [[x1 h] [x2 h]]
-    :left [[0 y1] [0 y2]]
-    :right [[w y1] [w y2]]))
-
-(defn- draw-curve!
-  [[[x1 y1] [x2 y2] :as position] orientation thickness color sketch-size]
-  #_(let [[[cx1 cy1] [cx2 cy2]] (curve-control-points position
-                                                      orientation
-                                                      sketch-size)]
-      (q/no-fill)
-      (q/stroke-weight thickness)
-      (apply q/stroke (q.color/color color))
-      (q/curve x1 cy1 x1 y1 x2 y2 cx2 cy2)
-      (q/stroke-weight 1)
-      (q/fill :black)))
+(defn- make-curve
+  [pos radius orientation thickness color]
+  (let [[angle1 angle2] (case orientation
+                          :down [270 90]
+                          :left [0 180]
+                          :right [180 0]
+                          :up [90 270])
+        [x1 y1] (polar->cartesian pos radius angle1)
+        [x2 y2] (polar->cartesian pos radius angle2)
+        arc-flag "0"]
+    [:path {:stroke (->html-color color)
+            :stroke-width thickness
+            :fill-opacity 0
+            :d (->> ["M" x1 y1
+                     "A" radius radius 0 arc-flag 0 x2 y2]
+                    (string/join " "))}]))
 
 (defn- make-line
   [[[x1 y1] [x2 y2]] thickness color]
@@ -65,9 +70,8 @@
       (make-circle position radius color))
 
     :curve
-    (let [{:keys [position thickness orientation]} form]
-      #_(draw-curve! position orientation thickness color
-                   (:size @sketch-atom)))
+    (let [{:keys [position radius thickness orientation]} form]
+      (make-curve position radius orientation thickness color))
 
     :line
     (let [{:keys [position thickness]} form]
