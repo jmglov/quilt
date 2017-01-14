@@ -4,7 +4,8 @@
             [quilt.color :as color])
   (:refer-clojure :exclude [replace]))
 
-(def ^:private color-docstring "color as a vector of [red green blue]")
+(def ^:private color-docstring
+  "color as a keyword or vector of [red green blue]")
 
 (def functions
   {:circle {:defaults {:position [0 0]

@@ -1,7 +1,7 @@
 (ns quilt.sketch
   (:require [clojure.string :as string]
             [goog.dom :as dom]
-            [quilt.color :as q.color]
+            [quilt.color :as q.color :refer [->html-color]]
             [quilt.util :refer [concatv]]
             [re-frame.core :as rf]
             [reagent.core :as r])
@@ -12,14 +12,12 @@
       (q/fill r g b)
       (q/stroke r g b)))
 
-(defn- clear! [sketch]
-  #_(let [{:keys [bg-color]} sketch]
-      (apply q/background bg-color)))
-
-(defn- draw-circle! [[x y] radius color]
-  (set-color! color)
-  (let [circumference (* 2 radius)]
-    #_(q/ellipse x y circumference circumference)))
+(defn- make-circle [[x y] radius color]
+  [:circle {:cx x
+            :cy y
+            :r radius
+            :fill (->html-color color)
+            :stroke-width 0}])
 
 (defn- curve-control-points [[[x1 y1] [x2 y2]] orientation [w h]]
   (case orientation
@@ -48,17 +46,19 @@
       (q/line x1 y1 x2 y2)
       (q/stroke-weight 1)))
 
-(defn- rectangle [[x y] width height color]
+(defn- make-rectangle [[x y] width height color]
   [:rect {:width width
           :height height
-          :style {:fill (q.color/->html-color color)
-                  :stroke-width 0}}])
+          :fill (->html-color color)
+          :stroke-width 0}])
 
-(defn- draw-text! [text [x y] size color]
-  (set-color! color)
-  #_(do (q/text-size size)
-        (q/text-align :center :top)
-        (q/text text x y)))
+(defn- make-text [text [x y] size color]
+  [:text {:x x
+          :y y
+          :font-size size
+          :fill (->html-color color)
+          :text-anchor :middle}
+   text])
 
 (defn- draw-triangle!
   [[[x1 y1] [x2 y2] [x3 y3]] color]
@@ -69,7 +69,7 @@
   (case fun
     :circle
     (let [{:keys [position radius]} form]
-      (draw-circle! position radius color))
+      (make-circle position radius color))
 
     :curve
     (let [{:keys [position thickness orientation]} form]
@@ -82,11 +82,11 @@
 
     :rectangle
     (let [{:keys [position width height]} form]
-      (rectangle position width height color))
+      (make-rectangle position width height color))
 
     :text
     (let [{:keys [text position size]} form]
-      (draw-text! text position size color))
+      (make-text text position size color))
 
     :triangle
     (let [{:keys [position]} form]
@@ -111,7 +111,5 @@
                 :on-click #(rf/dispatch [:lock-mouse-pos])
                 :on-mouseMove #(rf/dispatch [:set-mouse-pos
                                              (get-mouse-pos %)])}
-          (rectangle [0 0] width height (:bg-color @sketch-atom))]
-         (do
-           (println "Rendering code:" @code-atom)
-           (mapv ->shape @code-atom)))))))
+          (make-rectangle [0 0] width height (:bg-color @sketch-atom))]
+         (mapv ->shape @code-atom))))))
