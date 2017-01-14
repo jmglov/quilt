@@ -1,7 +1,7 @@
 (ns quilt.sketch
   (:require [clojure.string :as string]
             [quilt.color :refer [->html-color]]
-            [quilt.util :refer [concatv]]
+            [quilt.util :as util :refer [concatv]]
             [re-frame.core :as rf]))
 
 ;; http://stackoverflow.com/a/18473154/58994
@@ -92,10 +92,7 @@
     nil))
 
 (defn- get-mouse-pos [event]
-  (let [canvas-rect (.getBoundingClientRect (.-target event))
-        x (- (.-clientX event) (.-left canvas-rect))
-        y (- (.-clientY event) (.-top canvas-rect))]
-    [x y]))
+  (util/relative-position event (util/get-element "sketch")))
 
 (defn sketch []
   (let [code-atom (rf/subscribe [:code])
@@ -103,10 +100,10 @@
     (fn []
       (let [[width height] (:size @sketch-atom)]
         (concatv
-         [:svg {:width width
-                :height height
-                :on-click #(rf/dispatch [:lock-mouse-pos])
-                :on-mouseMove #(rf/dispatch [:set-mouse-pos
-                                             (get-mouse-pos %)])}
+         [:svg#sketch {:width width
+                       :height height
+                       :on-click #(rf/dispatch [:lock-mouse-pos])
+                       :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                                    (get-mouse-pos %)])}
           (make-rectangle [0 0] width height (:bg-color @sketch-atom))]
          (mapv ->shape @code-atom))))))

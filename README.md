@@ -12,7 +12,6 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* Fix mouse position in SVG mode!
 * Read drawing name from query params
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
