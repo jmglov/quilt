@@ -2,6 +2,7 @@
   (:require [cljs.pprint :refer [pprint]]
             [cljs.reader :refer [read-string]]
             [clojure.string :as string]
+            [hiccups.runtime]
             [quilt.code :as code]
             [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
@@ -10,7 +11,8 @@
             [quilt.views.code :as views.code]
             [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]
-            [reagent.core :as r]))
+            [reagent.core :as r])
+  (:require-macros [hiccups.core :as hiccups]))
 
 (defn- clear-code []
   (rf/dispatch [:clear-code]))
@@ -109,15 +111,15 @@
          [:textarea {:readOnly true
                      :value (with-out-str (pprint @code-atom))}]]))))
 
-(defn- svg-editor []
+(defn- html-editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])]
     (fn []
-      (when (= :svg (:type @editor-atom))
+      (when (= :html (:type @editor-atom))
         (let [shapes (consv :svg (sketch/create-shapes @code-atom))]
-          [:div#svg-editor.editor
+          [:div#html-editor.editor
            [:textarea {:readOnly true
-                       :value (with-out-str (pprint shapes))}]])))))
+                       :value (hiccups/html shapes)}]])))))
 
 (defn- editor-options []
   (let [editor-atom (rf/subscribe [:editor])
@@ -129,13 +131,13 @@
        [:div#editor-type
         "Editor:"
         [:select {:value (let [type (:type @editor-atom)]
-                           (if (= :svg type)
-                             "SVG"
+                           (if (= :html type)
+                             "HTML"
                              (string/capitalize (name type))))
                   :on-change select-editor}
          [:option "Visual"]
          [:option "Source"]
-         [:option "SVG"]
+         [:option "HTML"]
          [:option "Forms"]]]
        [:div#readonly-toggle
         [:input.editor-options-checkbox
@@ -193,7 +195,7 @@
       [visual-editor]
       [source-editor]
       [forms-editor]
-      [svg-editor]
+      [html-editor]
       [editor-options]
       [library]
       [debug]]]))
