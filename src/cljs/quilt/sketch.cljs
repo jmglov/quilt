@@ -48,6 +48,9 @@
           :fill (->html-color color)
           :stroke-width 0}])
 
+(defn- make-dot [pos color]
+  (make-rectangle pos 10 10 color))
+
 (defn- make-text [text [x y] size color]
   [:text {:x x, :y y
           :font-size size
@@ -72,6 +75,10 @@
     :curve
     (let [{:keys [position radius thickness orientation]} form]
       (make-curve position radius orientation thickness color))
+
+    :dot
+    (let [{:keys [position]} form]
+      (make-dot position color))
 
     :line
     (let [{:keys [position thickness]} form]

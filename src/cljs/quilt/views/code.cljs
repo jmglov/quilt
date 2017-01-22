@@ -84,6 +84,14 @@
      (input-num 2 form [:thickness] scale display) " "
      (color-picker form)]))
 
+(defn- render-dot [form readonly? scale display]
+  (if readonly?
+    (render-readonly form [] display)
+    ["["
+     (input-num 3 form [:position 0] scale display) " "
+     (input-num 3 form [:position 1] scale display) "] "
+     (color-picker form)]))
+
 (defn- render-line [form readonly? scale display]
   (if readonly?
     (render-readonly form [:thickness] display)
@@ -146,6 +154,7 @@
          (case fun
            :circle (render-circle form readonly? scale display)
            :curve (render-curve form readonly? scale display)
+           :dot (render-dot form readonly? scale display)
            :line (render-line form readonly? scale display)
            :rectangle (render-rectangle form readonly? scale display)
            :text (render-text form readonly? scale display)
