@@ -13,6 +13,6 @@
            :pos [0 0]}
    :sketch {:name "sketch"
             :size config/default-sketch-size
-            :lo-res? false
+            :lo-res? true
             :bg-color config/bg-color
             :fg-color [0 0 0]}})
