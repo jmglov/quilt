@@ -8,5 +8,6 @@
 (rf/reg-sub :editor :editor)
 (rf/reg-sub :language :language)
 (rf/reg-sub :mouse :mouse)
+(rf/reg-sub :simple-ui? :simple-ui?)
 (rf/reg-sub :sketch :sketch)
 (rf/reg-sub :source :source)

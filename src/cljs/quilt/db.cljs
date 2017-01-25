@@ -1,15 +1,20 @@
 (ns quilt.db
   (:require [cemerick.url :as url]
+            [clojure.string :as string]
             [quilt.config :as config]))
 
 (def default-language "en-GB")
+(def default-to-simple-ui? true)
+
+(defn- query-param [param default]
+  (-> js/window .-location .-href url/url :query
+      (get (name param) default)))
 
 (def default-db
-  {:language (let [query (-> js/window .-location .-href url/url :query)
-                   lang (or (query "hl") default-language)]
-               lang)
-   :code []
+  {:code []
    :source ""
+   :language (query-param :hl default-language)
+   :simple-ui? (not= "false" (query-param :simple default-to-simple-ui?))
    :editor {:type :visual
             :displayed-docstring nil
             :selected-index nil

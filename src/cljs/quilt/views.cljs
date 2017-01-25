@@ -24,6 +24,7 @@
 
 (defn- sketch-size []
   (let [sketch-atom (rf/subscribe [:sketch])
+        simple-ui? (rf/subscribe [:simple-ui?])
         set-size #(set-sketch-size sketch-atom %1 %2)]
     (fn []
       (concatv [:div#sketch-options]
@@ -32,20 +33,23 @@
                          (let [[width height]
                                (resolution/display @sketch-atom
                                                    (:size @sketch-atom))]
-                           [[:div
-                             "["
-                             (widgets/input-num #(set-size % height)
-                                                3 (str width))
-                             " "
-                             (widgets/input-num #(set-size width %)
-                                                3 (str height))
-                             "]"]]))]
-               [[:div#lo-res
-                 [:input.lo-res-checkbox
-                  {:type "checkbox"
-                   :checked (:lo-res? @sketch-atom)
-                   :on-change #(rf/dispatch [:toggle-lo-res])}]
-                 "Low resolution?"]]))))
+                           [(if @simple-ui?
+                              [:div (str "[" width " " height "]")]
+                              [:div
+                               "["
+                               (widgets/input-num #(set-size % height)
+                                                  3 (str width))
+                               " "
+                               (widgets/input-num #(set-size width %)
+                                                  3 (str height))
+                               "]"])]))]
+               (when-not @simple-ui?
+                 [[:div#lo-res
+                   [:input.lo-res-checkbox
+                    {:type "checkbox"
+                     :checked (:lo-res? @sketch-atom)
+                     :on-change #(rf/dispatch [:toggle-lo-res])}]
+                   "Low resolution?"]])))))
 
 (defn- mouse-pos []
   (let [mouse-atom (rf/subscribe [:mouse])
@@ -125,7 +129,8 @@
   (let [editor-atom (rf/subscribe [:editor])
         select-editor #(rf/dispatch
                         [:select-editor
-                         (keyword (string/lower-case (get-value %)))])]
+                         (keyword (string/lower-case (get-value %)))])
+        simple-ui? (rf/subscribe [:simple-ui?])]
     (fn []
       [:div#editor-options.container
        [:div#editor-type
@@ -140,12 +145,14 @@
          [:option "HTML"]
          [:option "Forms"]]]
        [:div#readonly-toggle
+        {:style (if @simple-ui? {:display "none"} {})}
         [:input.editor-options-checkbox
          {:type "checkbox"
           :checked (:readonly? @editor-atom)
           :on-change #(rf/dispatch [:toggle-readonly])}]
         "Read only?"]
        [:div#debug-toggle
+        {:style (if @simple-ui? {:display "none"} {})}
         [:input.editor-options-checkbox
          {:type "checkbox"
           :checked (:debug? @editor-atom)
