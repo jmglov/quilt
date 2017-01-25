@@ -1,8 +1,14 @@
 (ns quilt.db
-  (:require [quilt.config :as config]))
+  (:require [cemerick.url :as url]
+            [quilt.config :as config]))
+
+(def default-language "en-GB")
 
 (def default-db
-  {:code []
+  {:language (let [query (-> js/window .-location .-href url/url :query)
+                   lang (or (query "hl") default-language)]
+               lang)
+   :code []
    :source ""
    :editor {:type :visual
             :displayed-docstring nil

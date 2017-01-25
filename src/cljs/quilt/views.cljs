@@ -182,6 +182,11 @@
                              with-out-str
                              (string/split "\n"))))]))))
 
+(defn- language []
+  (let [lang-atom (rf/subscribe [:language])]
+    (fn []
+      [:div "Language: " @lang-atom])))
+
 (defn main-panel []
   (fn []
     [:div.container
@@ -189,7 +194,8 @@
       [sketch]
       [:div.container
        [sketch-size]
-       [mouse-pos]]]
+       [mouse-pos]]
+      [language]]
      [:div#editor
       [:h2 "Code"]
       [visual-editor]
