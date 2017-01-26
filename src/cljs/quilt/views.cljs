@@ -6,7 +6,6 @@
             [quilt.code :as code]
             [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
-            [quilt.sketch.resolution :as resolution]
             [quilt.util :refer [concatv consv get-value]]
             [quilt.views.code :as views.code]
             [quilt.views.widgets :as widgets]
@@ -18,38 +17,27 @@
   (rf/dispatch [:clear-code]))
 
 (defn- set-sketch-size [sketch-atom width height]
-  (rf/dispatch [:set-sketch-size
-                (resolution/scale @sketch-atom width)
-                (resolution/scale @sketch-atom height)]))
+  (rf/dispatch [:set-sketch-size width height]))
 
 (defn- sketch-size []
   (let [sketch-atom (rf/subscribe [:sketch])
         simple-ui? (rf/subscribe [:simple-ui?])
         set-size #(set-sketch-size sketch-atom %1 %2)]
     (fn []
-      (concatv [:div#sketch-options]
-               [(concatv [:div.container
-                          [:span.label "Drawing size"]]
-                         (let [[width height]
-                               (resolution/display @sketch-atom
-                                                   (:size @sketch-atom))]
-                           [(if @simple-ui?
-                              [:div (str "[" width " " height "]")]
-                              [:div
-                               "["
-                               (widgets/input-num #(set-size % height)
-                                                  3 (str width))
-                               " "
-                               (widgets/input-num #(set-size width %)
-                                                  3 (str height))
-                               "]"])]))]
-               (when-not @simple-ui?
-                 [[:div#lo-res
-                   [:input.lo-res-checkbox
-                    {:type "checkbox"
-                     :checked (:lo-res? @sketch-atom)
-                     :on-change #(rf/dispatch [:toggle-lo-res])}]
-                   "Low resolution?"]])))))
+      (let [[width height] (:size @sketch-atom)]
+        [:div#sketch-options
+         [:div.container
+          [:span.label "Drawing size"]
+          (if @simple-ui?
+            [:div (str "[" width " " height "]")]
+            [:div
+             "["
+             (widgets/input-num #(set-size % height)
+                                3 (str width))
+             " "
+             (widgets/input-num #(set-size width %)
+                                3 (str height))
+             "]"])]]))))
 
 (defn- mouse-pos []
   (let [mouse-atom (rf/subscribe [:mouse])
@@ -59,9 +47,8 @@
        {:on-click #(rf/dispatch [:lock-mouse-pos])}
        [:div
         [:span.label "Current position"]
-        (let [[x y] (:pos @mouse-atom)
-              display #(resolution/display @sketch-atom %)]
-          [:span (str "[" (display x) " " (display y) "]")])]
+        (let [[x y] (:pos @mouse-atom)]
+          [:span (str "[" x " " y "]")])]
        [:div (if (:locked? @mouse-atom)
                "Click drawing to show moving"
                "Click drawing to remember")]])))
