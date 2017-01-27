@@ -46,7 +46,9 @@
 (rf/reg-event-db
  :eval-code
  (fn [{:keys [source] :as db} [_]]
-   (assoc db :code (code/add-forms [] (code/read source)))))
+   (if-let [code (code/read source)]
+     (assoc db :code (code/add-forms [] code))
+     db)))
 
 
 ;; Visual editor
@@ -87,6 +89,12 @@
  :set-source
  (fn [db [_ source]]
    (assoc db :source source)))
+
+(rf/reg-event-db
+ :reset-source
+ (fn [{:keys [code] :as db} [_]]
+   (let [source (code/forms->str code)]
+     (assoc db :source source))))
 
 
 ;; Editor config
