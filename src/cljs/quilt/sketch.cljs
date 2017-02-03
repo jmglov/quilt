@@ -4,12 +4,11 @@
             [quilt.util :as util :refer [concatv]]
             [re-frame.core :as rf]))
 
-;; http://stackoverflow.com/a/18473154/58994
+(defn- ->num [n]
+  (or n 0))
 
-(defn- polar->cartesian [[x y] radius angle-deg]
-  (let [angle-rad (/ (* (- angle-deg 90) Math/PI) 180.0)]
-    [(+ x (int (* radius (Math/cos angle-rad))))
-     (+ y (int (* radius (Math/sin angle-rad))))]))
+(defn- ->nums [ns]
+  (map ->num ns))
 
 (defn- make-circle [[x y] radius color]
   [:circle {:cx x
@@ -18,9 +17,17 @@
             :fill (->html-color color)
             :stroke-width 0}])
 
-(defn- make-curve
-  [pos radius orientation thickness color]
-  (let [[angle1 angle2] (case orientation
+;; http://stackoverflow.com/a/18473154/58994
+
+(defn- polar->cartesian [[x y] radius angle-deg]
+  (let [angle-rad (/ (* (- angle-deg 90) Math/PI) 180.0)
+        [x y radius] (->nums [x y radius])]
+    [(+ x (int (* radius (Math/cos angle-rad))))
+     (+ y (int (* radius (Math/sin angle-rad))))]))
+
+(defn- make-curve [pos radius orientation thickness color]
+  (let [[radius thickness] (->nums [radius thickness])
+        [angle1 angle2] (case orientation
                           :down [270 90]
                           :left [0 180]
                           :right [180 0]
@@ -35,33 +42,35 @@
                      "A" radius radius 0 arc-flag 0 x2 y2]
                     (string/join " "))}]))
 
-(defn- make-line
-  [[[x1 y1] [x2 y2]] thickness color]
-  [:line {:x1 x1, :y1 y1
-          :x2 x2, :y2 y2
-          :stroke (->html-color color)
-          :stoke-width thickness}])
+(defn- make-line [[[x1 y1] [x2 y2]] thickness color]
+  (let [[x1 y1 x2 y2 thickness] (->nums [x1 y1 x2 y2 thickness])]
+    [:line {:x1 x1, :y1 y1
+            :x2 x2, :y2 y2
+            :stroke (->html-color color)
+            :stoke-width thickness}]))
 
 (defn- make-rectangle [[x y] width height color]
-  [:rect {:x x, :y y
-          :width width, :height height
-          :fill (->html-color color)
-          :stroke-width 0}])
+  (let [[x y width height] (->nums [x y width height])]
+    [:rect {:x x, :y y
+            :width width, :height height
+            :fill (->html-color color)
+            :stroke-width 0}]))
 
 (defn- make-dot [pos color]
   (make-rectangle pos 10 10 color))
 
 (defn- make-text [text [x y] size color]
-  [:text {:x x, :y y
-          :font-size size
-          :fill (->html-color color)
-          :text-anchor :middle}
-   text])
+  (let [[x y size] (->nums [x y size])]
+    [:text {:x x, :y y
+            :font-size size
+            :fill (->html-color color)
+            :text-anchor :middle}
+     text]))
 
 (defn- make-triangle
   [position color]
   (let [points (->> position
-                    (map #(string/join "," %))
+                    (map #(string/join "," (->num %)))
                     (string/join " "))]
     [:polygon {:points points
                :fill (->html-color color)}]))

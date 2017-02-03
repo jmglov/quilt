@@ -116,20 +116,27 @@
        (string/join "\n")))
 
 (defn- read-line [line]
-  (when-let [[fun & args] (read-string line)]
-    (let [fun (keyword fun)
-          params (map first (get-in functions [fun :params]))]
-      (->> (interleave params args)
-           (apply hash-map)
-           (merge {:fun fun})))))
+  (try
+    (when-let [[fun & args] (read-string line)]
+      (let [fun (keyword fun)
+            params (map first (get-in functions [fun :params]))]
+        (->> (interleave params args)
+             (apply hash-map)
+             (merge {:fun fun}))))
+    (catch :default e
+      (js/alert (str "Error evaluating line: " line))
+      (throw (js/Error. :read-line)))))
 
 (defn read [source]
-  (let [code (->> (string/split-lines source)
-                  (map read-line)
-                  (remove nil?)
-                  (into []))]
-    (println "Read code:" code)
-    code))
+  (try
+    (let [code (->> (string/split-lines source)
+                    (map read-line)
+                    (remove nil?)
+                    (into []))]
+      (println "Read code:" code)
+      code)
+    (catch :default _
+      nil)))
 
 (defn set-index [form index]
   (assoc form :index index))

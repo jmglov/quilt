@@ -29,7 +29,7 @@
 
 (defn- input-num
   [size {:keys [index] :as form} [param & _ :as path]]
-  (input-assoc size form path read-string 0))
+  (input-assoc size form path read-string nil))
 
 (defn- input-text [size form path]
   (input-assoc size form path identity ""))

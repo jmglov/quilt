@@ -90,8 +90,8 @@
                      :on-change #(rf/dispatch [:set-source (get-value %)])}]
          [:div.container
           [:button {:on-click eval-code} "Eval"]
-          [:button {:on-click #(rf/dispatch [:set-source ""])}
-           "Clear"]]]))))
+          [:button {:on-click #(rf/dispatch [:set-source ""])} "Clear"]
+          [:button {:on-click #(rf/dispatch [:reset-source])} "Reset"]]]))))
 
 (defn- forms-editor []
   (let [code-atom (rf/subscribe [:code])
