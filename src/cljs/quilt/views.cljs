@@ -4,6 +4,7 @@
             [clojure.string :as string]
             [hiccups.runtime]
             [quilt.code :as code]
+            [quilt.i8n :as i8n]
             [quilt.library :as library]
             [quilt.sketch :as sketch :refer [sketch]]
             [quilt.util :refer [concatv consv get-value]]
@@ -27,7 +28,7 @@
       (let [[width height] (:size @sketch-atom)]
         [:div#sketch-options
          [:div.container
-          [:span.label "Drawing size"]
+          [:span.label (i8n/str "Drawing size")]
           (if @simple-ui?
             [:div (str "[" width " " height "]")]
             [:div
@@ -46,12 +47,14 @@
       [:div#mouse-pos
        {:on-click #(rf/dispatch [:lock-mouse-pos])}
        [:div
-        [:span.label "Current position"]
+        [:span.label (if (:locked? @mouse-atom)
+                       (i8n/str "Saved position")
+                       (i8n/str "Current position"))]
         (let [[x y] (:pos @mouse-atom)]
           [:span (str "[" x " " y "]")])]
        [:div (if (:locked? @mouse-atom)
-               "Click drawing to show moving"
-               "Click drawing to remember")]])))
+               (i8n/str "Click drawing to show current position")
+               (i8n/str "Click drawing to save current position"))]])))
 
 (defn- visual-editor []
   (let [code-atom (rf/subscribe [:code])
@@ -73,9 +76,10 @@
             [:select
              {:value (name @new-fun)
               :on-change #(reset! new-fun (keyword (get-value %)))}]
-            (map (fn [[fun _]] [:option (name fun)]) code/functions))
-           [:button {:on-click add-code} "Add"]]
-          [:button {:on-click clear-code} "Delete all"]]]))))
+            (map (fn [[fun _]] [:option (i8n/str (name fun))])
+                 code/functions))
+           [:button {:on-click add-code} (i8n/str "Add")]]
+          [:button {:on-click clear-code} (i8n/str "Delete all")]]]))))
 
 (defn- source-editor []
   (let [code-atom (rf/subscribe [:code])
@@ -89,9 +93,15 @@
                      :value @source-atom
                      :on-change #(rf/dispatch [:set-source (get-value %)])}]
          [:div.container
-          [:button {:on-click eval-code} "Eval"]
-          [:button {:on-click #(rf/dispatch [:set-source ""])} "Clear"]
-          [:button {:on-click #(rf/dispatch [:reset-source])} "Reset"]]]))))
+          [:button
+           {:on-click eval-code}
+           (i8n/str "Eval")]
+          [:button
+           {:on-click #(rf/dispatch [:set-source ""])}
+           (i8n/str "Clear")]
+          [:button
+           {:on-click #(rf/dispatch [:reset-source])}
+           (i8n/str "Reset")]]]))))
 
 (defn- forms-editor []
   (let [code-atom (rf/subscribe [:code])
@@ -121,43 +131,43 @@
     (fn []
       [:div#editor-options.container
        [:div#editor-type
-        "Editor:"
+        (str (i8n/str "Editor") ":")
         [:select {:value (let [type (:type @editor-atom)]
                            (if (= :html type)
                              "HTML"
                              (string/capitalize (name type))))
                   :on-change select-editor}
-         [:option "Visual"]
-         [:option "Source"]
-         [:option "HTML"]
-         [:option "Forms"]]]
+         [:option (i8n/str "Visual")]
+         [:option (i8n/str "Source")]
+         [:option (i8n/str "HTML")]
+         [:option (i8n/str "Forms")]]]
        [:div#readonly-toggle
         {:style (if @simple-ui? {:display "none"} {})}
         [:input.editor-options-checkbox
          {:type "checkbox"
           :checked (:readonly? @editor-atom)
           :on-change #(rf/dispatch [:toggle-readonly])}]
-        "Read only?"]
+        (i8n/str "Read only?")]
        [:div#debug-toggle
         {:style (if @simple-ui? {:display "none"} {})}
         [:input.editor-options-checkbox
          {:type "checkbox"
           :checked (:debug? @editor-atom)
           :on-change #(rf/dispatch [:toggle-debug])}]
-        "Show debug?"]])))
+        (i8n/str "Show debug?")]])))
 
 (defn- library []
   (let [sketch-name (r/atom (first (keys library/sketches)))
         set-sketch #(reset! sketch-name (keyword (get-value %)))]
     (fn []
       [:div#library.container
-       "Load drawing:"
+       (str (i8n/str "Load drawing") ":")
        (concatv [:select {:value (name @sketch-name)
                           :on-change set-sketch}]
                 (mapv (fn [s] [:option (name s)])
                       (keys library/sketches)))
        [:button {:on-click #(rf/dispatch [:load-sketch @sketch-name])}
-        "OK"]])))
+        (i8n/str "OK")]])))
 
 (defn- debug []
   (let [db-atom (rf/subscribe [:db])
@@ -166,7 +176,7 @@
     (fn []
       (when (:debug? @editor-atom)
         [:div#debug
-         [:h2 "Debug"]
+         [:h2 (i8n/str "Debug")]
          (concatv [:div.outlined]
                   (mapv (fn [line]
                           [:div
@@ -179,7 +189,7 @@
 (defn- language []
   (let [lang-atom (rf/subscribe [:language])]
     (fn []
-      [:div "Language: " @lang-atom])))
+      [:div (str (i8n/str "Language") ": ") @lang-atom])))
 
 (defn main-panel []
   (fn []
@@ -191,7 +201,7 @@
        [mouse-pos]]
       [language]]
      [:div#editor
-      [:h2 "Code"]
+      [:h2 (i8n/str "Code")]
       [visual-editor]
       [source-editor]
       [forms-editor]
