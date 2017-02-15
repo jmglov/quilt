@@ -11,11 +11,11 @@
   (map ->num ns))
 
 (defn- make-circle [[x y] radius color]
-  [:circle {:cx x
+  [:circle {:style {:stroke-width 0}
+            :cx x
             :cy y
             :r radius
-            :fill (->html-color color)
-            :stroke-width 0}])
+            :fill (->html-color color)}])
 
 ;; http://stackoverflow.com/a/18473154/58994
 
@@ -35,8 +35,8 @@
         [x1 y1] (polar->cartesian pos radius angle1)
         [x2 y2] (polar->cartesian pos radius angle2)
         arc-flag "0"]
-    [:path {:stroke (->html-color color)
-            :stroke-width thickness
+    [:path {:style {:stroke (->html-color color)
+                    :stroke-width thickness}
             :fill-opacity 0
             :d (->> ["M" x1 y1
                      "A" radius radius 0 arc-flag 0 x2 y2]
@@ -44,20 +44,17 @@
 
 (defn- make-line [[[x1 y1] [x2 y2]] thickness color]
   (let [[x1 y1 x2 y2 thickness] (->nums [x1 y1 x2 y2 thickness])]
-    [:line {:x1 x1, :y1 y1
-            :x2 x2, :y2 y2
-            :stroke (->html-color color)
-            :stoke-width thickness}]))
+    [:line {:style {:stroke-width thickness
+                    :stroke (->html-color color)}
+            :x1 x1, :y1 y1
+            :x2 x2, :y2 y2}]))
 
 (defn- make-rectangle [[x y] width height color]
   (let [[x y width height] (->nums [x y width height])]
-    [:rect {:x x, :y y
+    [:rect {:style {:stroke-width 0}
+            :x x, :y y
             :width width, :height height
-            :fill (->html-color color)
-            :stroke-width 0}]))
-
-(defn- make-dot [pos color]
-  (make-rectangle pos 10 10 color))
+            :fill (->html-color color)}]))
 
 (defn- make-text [text [x y] size color]
   (let [[x y size] (->nums [x y size])]
