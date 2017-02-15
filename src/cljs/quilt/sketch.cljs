@@ -82,10 +82,6 @@
     (let [{:keys [position radius thickness orientation]} form]
       (make-curve position radius orientation thickness color))
 
-    :dot
-    (let [{:keys [position]} form]
-      (make-dot position color))
-
     :line
     (let [{:keys [position thickness]} form]
       (make-line position thickness color))

@@ -24,10 +24,6 @@
                     [:orientation "one of :up, :down, :left, or :right"]
                     [:thickness "thickness as a number"]
                     [:color color-docstring]]}
-   :dot {:defaults {:position [0 0]}
-         :doc "creates a dot at a point point"
-         :params [[:position "point as a vector of [x y]"]
-                  [:color color-docstring]]}
    :line {:defaults {:position [[0 0] [0 0]]
                      :thickness 1}
           :doc "creates a line from a starting point to an ending point"

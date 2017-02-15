@@ -82,14 +82,6 @@
      (input-num 2 form [:thickness]) " "
      (color-picker form)]))
 
-(defn- render-dot [form readonly?]
-  (if readonly?
-    (render-readonly form [])
-    ["["
-     (input-num 3 form [:position 0]) " "
-     (input-num 3 form [:position 1]) "] "
-     (color-picker form)]))
-
 (defn- render-line [form readonly?]
   (if readonly?
     (render-readonly form [:thickness])
