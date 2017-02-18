@@ -2,7 +2,18 @@
   (:require [re-frame.core :as rf])
   (:refer-clojure :exclude [str]))
 
-(def translations
+(def languages [[:en-GB "English"]
+                [:sv-SE "Svenska"]])
+
+(defn language-code [lang]
+  (some (fn [[code label]] (when (= lang label) code))
+        languages))
+
+(defn language-label [lang]
+  (some (fn [[code label]] (when (= lang code) label))
+        languages))
+
+(def ^:private translations
   {"Add"
    {:sv-SE "Lägg till"}
 

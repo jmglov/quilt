@@ -124,3 +124,7 @@ span.label {
     margin-top: 0px;
     margin-bottom: 10px;
 }
+
+#lang > select {
+    margin-left: 10px;
+}

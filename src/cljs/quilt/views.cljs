@@ -187,9 +187,19 @@
                              (string/split "\n"))))]))))
 
 (defn- language []
-  (let [lang-atom (rf/subscribe [:language])]
+  (let [lang-atom (rf/subscribe [:language])
+        select-lang #(rf/dispatch
+                      [:select-lang
+                       (i18n/language-code (get-value %))])]
     (fn []
-      [:div (str (i18n/str "Language") ": ") @lang-atom])))
+      [:div#lang.container
+       [:div (str (i18n/str "Language") ": " (i18n/language-label @lang-atom))]
+       ;; TODO: dynamically change language
+       #_(concatv [:select {:value (str @lang-atom)
+                          :on-change select-lang}]
+                (mapv (fn [[code label]]
+                        [:option {:value code} label])
+                      i18n/languages))])))
 
 (defn main-panel []
   (fn []

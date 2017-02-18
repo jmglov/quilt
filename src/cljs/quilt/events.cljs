@@ -148,3 +148,12 @@
  (fn [db [_ width height]]
    (println "Setting sketch size:" width height)
    (assoc-in db [:sketch :size] [width height])))
+
+
+;; Language
+;; =============================================================================
+
+(rf/reg-event-db
+ :select-lang
+ (fn [db [_ lang]]
+   (assoc db [:language] lang)))
