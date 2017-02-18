@@ -31,7 +31,7 @@
            :thickness 10}
           {:fun :text
            :color :black
-           :position [250 10]
+           :position [250 50]
            :text "Hello, world!"
            :size 40}
           {:fun :circle
