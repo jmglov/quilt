@@ -12,12 +12,6 @@
    "Code"
    {:sv-SE "Kod"}
 
-   "circle"
-   {:sv-SE "cirkel"}
-
-   "curve"
-   {:sv-SE "kurva"}
-
    "Click drawing to show current position"
    {:sv-SE "Klicka på bilden för att visa nuvarande position"}
 
@@ -26,6 +20,24 @@
 
    "Current position"
    {:sv-SE "Nuvarande position"}
+
+   "creates a circle around a central point"
+   {:sv-SE "skapar en cirkel runt en central punkt"}
+
+   "creates a circular curve around a central point"
+   {:sv-SE "skapar en cirkulär kurva runt en central punkt"}
+
+   "creates a line from a starting point to an ending point"
+   {:sv-SE "skapar en linje från en startpunkt till en slutpunkt"}
+
+   "creates a rectangle from an upper left corner point"
+   {:sv-SE "skapar en rektangel från en punkt i övre vänstra hörnet"}
+
+   "creates some text at a top center point"
+   {:sv-SE "skapar text vid en punkt i övre kantens mitt"}
+
+   "creates a triangle with three corner points"
+   {:sv-SE "skapar en triangel med tre hörnpunkter"}
 
    "Debug"
    {:sv-SE "Debug"}
@@ -51,9 +63,6 @@
    "Language"
    {:sv-SE "Språk"}
 
-   "line"
-   {:sv-SE "linje"}
-
    "Load drawing"
    {:sv-SE "Ladda teckning"}
 
@@ -63,20 +72,11 @@
    "Reset"
    {:sv-SE "Återställ"}
 
-   "rectangle"
-   {:sv-SE "rektangel"}
-
    "Show debug?"
    {:sv-SE "Visa debug?"}
 
    "Source"
    {:sv-SE "Källkod"}
-
-   "text"
-   {:sv-SE "text"}
-
-   "triangle"
-   {:sv-SE "triangel"}
 
    "Visual"
    {:sv-SE "Visuell"}})

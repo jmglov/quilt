@@ -1,7 +1,8 @@
 (ns quilt.code
   (:require [cljs.reader :refer [read-string]]
             [clojure.string :as string]
-            [quilt.color :as color])
+            [quilt.color :as color]
+            [quilt.i18n :as i18n])
   (:refer-clojure :exclude [replace]))
 
 (def ^:private color-docstring
@@ -136,4 +137,4 @@
     (->> (get-in functions [fun :params])
          (some (fn [[p doc]] (when (= param p) doc)))
          (str (name param) ": "))
-    (str (name fun) ": " (get-in functions [fun :doc]))))
+    (str (name fun) ": " (i18n/str (get-in functions [fun :doc])))))
