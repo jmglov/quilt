@@ -76,7 +76,7 @@
             [:select
              {:value (name @new-fun)
               :on-change #(reset! new-fun (keyword (get-value %)))}]
-            (map (fn [[fun _]] [:option (i18n/str (name fun))])
+            (map (fn [[fun _]] [:option (name fun)])
                  code/functions))
            [:button {:on-click add-code} (i18n/str "Add")]]
           [:button {:on-click clear-code} (i18n/str "Delete all")]]]))))
