@@ -136,5 +136,6 @@
   (if param
     (->> (get-in functions [fun :params])
          (some (fn [[p doc]] (when (= param p) doc)))
+         i18n/str
          (str (name param) ": "))
     (str (name fun) ": " (i18n/str (get-in functions [fun :doc])))))
