@@ -60,8 +60,6 @@
 (defn add-form [code form]
   (let [form (assoc form :index (count code))
         code (conj code form)]
-    (println "Added form:" form)
-    (println "New code:" code)
     code))
 
 (defn add-forms [code forms]
@@ -71,15 +69,11 @@
   (let [code (->> code
                   (remove #(= index (:index %)))
                   (into []))]
-    (println "Removed form:" form)
-    (println "New code:" code)
     code))
 
 (defn replace [code {:keys [index] :as form}]
   (let [old-form (get code index)
         code (assoc code index form)]
-    (println "Replaced form:" old-form)
-    (println "New code:" code)
     code))
 
 (defn reorder [code cur-index new-index]
@@ -87,8 +81,6 @@
         others (remove #(= cur-index (:index %)) code)
         before (take new-index others)
         after (drop new-index others)]
-    (println "Moving form" (:fun form) "from index" cur-index
-             "to" new-index)
     (add-forms []
                (concat before
                        [(assoc form :index new-index)]
@@ -130,7 +122,6 @@
                     (map read-line)
                     (remove nil?)
                     (into []))]
-      (println "Read code:" code)
       code)
     (catch :default _
       nil)))
