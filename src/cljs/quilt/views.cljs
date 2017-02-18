@@ -137,10 +137,10 @@
                              "HTML"
                              (string/capitalize (name type))))
                   :on-change select-editor}
-         [:option (i18n/str "Visual")]
-         [:option (i18n/str "Source")]
-         [:option (i18n/str "HTML")]
-         [:option (i18n/str "Forms")]]]
+         [:option {:value "Visual"} (i18n/str "Visual")]
+         [:option {:value "Source"} (i18n/str "Source")]
+         [:option {:value "HTML"} (i18n/str "HTML")]
+         [:option {:value "Forms"} (i18n/str "Forms")]]]
        [:div#readonly-toggle
         {:style (if @simple-ui? {:display "none"} {})}
         [:input.editor-options-checkbox
