@@ -1,55 +1,54 @@
 (ns quilt.code
   (:require [cljs.reader :refer [read-string]]
             [clojure.string :as string]
-            [quilt.color :as color]
-            [quilt.i18n :as i18n])
+            [quilt.color :as color])
   (:refer-clojure :exclude [replace]))
 
 (def ^:private color-docstring
-  (i18n/str "color as a keyword or vector of [red green blue]"))
+  "color as a keyword or vector of [red green blue]")
 
 (def functions
   {:circle {:defaults {:position [0 0]
                        :radius 0}
-            :doc (i18n/str "creates a circle around a central point")
-            :params [[:position (i18n/str "centre point of as a vector of [x y]")]
-                     [:radius (i18n/str "radius as a number")]
+            :doc "creates a circle around a central point"
+            :params [[:position "centre point of as a vector of [x y]"]
+                     [:radius "radius as a number"]
                      [:color color-docstring]]}
    :curve {:defaults {:position [0 0]
                       :radius 0
                       :orientation :down
                       :thickness 1}
-           :doc (i18n/str "creates a circular curve around a central point")
-           :params [[:position (i18n/str "centre point as vector of [x y")]
-                    [:radius (i18n/str "radius as a number")]
-                    [:orientation (i18n/str "one of :up, :down, :left, or :right")]
-                    [:thickness (i18n/str "thickness as a number")]
+           :doc "creates a circular curve around a central point"
+           :params [[:position "centre point as vector of [x y"]
+                    [:radius "radius as a number"]
+                    [:orientation "one of :up, :down, :left, or :right"]
+                    [:thickness "thickness as a number"]
                     [:color color-docstring]]}
    :line {:defaults {:position [[0 0] [0 0]]
                      :thickness 1}
-          :doc (i18n/str "creates a line from a starting point to an ending point")
-          :params [[:position (i18n/str "starting and ending points as vector of [[x1 y1] [x2 y2]")]
-                   [:thickness (i18n/str "thickness as a number")]
+          :doc "creates a line from a starting point to an ending point"
+          :params [[:position "starting and ending points as vector of [[x1 y1] [x2 y2]"]
+                   [:thickness "thickness as a number"]
                    [:color color-docstring]]}
    :rectangle {:defaults {:position [0 0]
                           :width 0
                           :height 0}
-               :doc (i18n/str "creates a rectangle from an upper left corner point")
-               :params [[:position (i18n/str "upper left corner as a vector of [x y]")]
-                        [:width (i18n/str "width as a number")]
-                        [:height (i18n/str "height as a number")]
+               :doc "creates a rectangle from an upper left corner point"
+               :params [[:position "upper left corner as a vector of [x y]"]
+                        [:width "width as a number"]
+                        [:height "height as a number"]
                         [:color color-docstring]]}
    :text {:defaults {:position [0 0]
                      :text ""
                      :size 24}
-          :doc (i18n/str "creates some text at a top center point")
-          :params [[:position (i18n/str "top centre as a vector of [x y]")]
-                   [:text (i18n/str "text to display")]
-                   [:size (i18n/str "text size as a number")]
+          :doc "creates some text at a top center point"
+          :params [[:position "top centre as a vector of [x y]"]
+                   [:text "text to display"]
+                   [:size "text size as a number"]
                    [:color color-docstring]]}
    :triangle {:defaults {:position [[0 0] [0 0] [0 0]]}
-              :doc (i18n/str "creates a triangle with three corner points")
-              :params [[:position (i18n/str "three points as vector of [[x1 y1] [x2 y2] [x3 y3]]")]
+              :doc "creates a triangle with three corner points"
+              :params [[:position "three points as vector of [[x1 y1] [x2 y2] [x3 y3]]"]
                        [:color color-docstring]]}})
 
 (def orientations [:down
