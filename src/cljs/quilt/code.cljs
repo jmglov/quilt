@@ -6,13 +6,13 @@
   (:refer-clojure :exclude [replace]))
 
 (def ^:private color-docstring
-  "color as a keyword or vector of [red green blue]")
+  "color as a keyword or vector of [:red :green :blue]")
 
 (def functions
   {:circle {:defaults {:position [0 0]
                        :radius 0}
             :doc "creates a circle around a central point"
-            :params [[:position "centre point of as a vector of [x y]"]
+            :params [[:position "centre point as a vector of [x y]"]
                      [:radius "radius as a number"]
                      [:color color-docstring]]}
    :curve {:defaults {:position [0 0]
@@ -20,15 +20,15 @@
                       :orientation :down
                       :thickness 1}
            :doc "creates a circular curve around a central point"
-           :params [[:position "centre point as vector of [x y"]
+           :params [[:position "centre point as a vector of [x y]"]
                     [:radius "radius as a number"]
-                    [:orientation "one of :up, :down, :left, or :right"]
+                    [:orientation "one of :up, :down, :left or :right"]
                     [:thickness "thickness as a number"]
                     [:color color-docstring]]}
    :line {:defaults {:position [[0 0] [0 0]]
                      :thickness 1}
           :doc "creates a line from a starting point to an ending point"
-          :params [[:position "starting and ending points as vector of [[x1 y1] [x2 y2]"]
+          :params [[:position "starting and ending points as vector of [[x1 y1] [x2 y2]]"]
                    [:thickness "thickness as a number"]
                    [:color color-docstring]]}
    :rectangle {:defaults {:position [0 0]
