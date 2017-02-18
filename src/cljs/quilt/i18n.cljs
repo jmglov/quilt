@@ -36,9 +36,6 @@
    "Delete all"
    {:sv-SE "Ta bort alla"}
 
-   "dot"
-   {:sv-SE "punkt"}
-
    "Editor"
    {:sv-SE "Editor"}
 

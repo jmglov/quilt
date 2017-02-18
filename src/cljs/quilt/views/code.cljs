@@ -18,7 +18,6 @@
 
 (defn- show-param-docstring [index param]
   (fn [_]
-    (println (str "Form " index " param " param " focused"))
     (rf/dispatch [:show-docstring [index param]])))
 
 (defn- input-assoc
@@ -142,7 +141,6 @@
          (case fun
            :circle (render-circle form readonly?)
            :curve (render-curve form readonly?)
-           :dot (render-dot form readonly?)
            :line (render-line form readonly?)
            :rectangle (render-rectangle form readonly?)
            :text (render-text form readonly?)
