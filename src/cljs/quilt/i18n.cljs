@@ -1,9 +1,9 @@
-(ns quilt.i8n
-  (:require [re-frame.core :as rf]))
+(ns quilt.i18n
+  (:require [re-frame.core :as rf])
+  (:refer-clojure :exclude [str]))
 
 (def translations
-  {
-   "Add"
+  {"Add"
    {:sv-SE "Lägg till"}
 
    "Clear"
@@ -82,8 +82,7 @@
    {:sv-SE "triangel"}
 
    "Visual"
-   {:sv-SE "Visuell"}
-   })
+   {:sv-SE "Visuell"}})
 
 (defn str [string]
   (let [language (rf/subscribe [:language])]
