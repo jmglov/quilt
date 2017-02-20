@@ -3,7 +3,7 @@
             [clojure.string :as string]
             [quilt.config :as config]))
 
-(def default-language :sv-SE)
+(def default-language :en-GB)
 (def default-to-simple-ui? true)
 
 (defn- query-param [param default]
