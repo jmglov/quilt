@@ -97,6 +97,11 @@ span.label {
     margin-left: 10px;
 }
 
+#clear-code {
+    background-color: red;
+    margin-left: auto;
+}
+
 .editor > textarea {
     width: 100%;
     height: 100px;

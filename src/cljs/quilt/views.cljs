@@ -79,7 +79,7 @@
             (map (fn [[fun _]] [:option (name fun)])
                  code/functions))
            [:button {:on-click add-code} (i18n/str "Add")]]
-          [:button {:on-click clear-code} (i18n/str "Delete all")]]]))))
+          [:button#clear-code {:on-click clear-code} (i18n/str "Delete all")]]]))))
 
 (defn- source-editor []
   (let [code-atom (rf/subscribe [:code])
