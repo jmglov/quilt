@@ -2,6 +2,14 @@
     display: flex;
 }
 
+#left-pane {
+}
+
+#right-pane {
+    width: 100%;
+    padding-left: 10px;
+}
+
 .outlined {
     outline: black solid thin;
 }
@@ -24,7 +32,7 @@ span.label {
 }
 
 #mouse-pos {
-    margin-left: 55px;
+    margin-left: 15px;
 }
 
 #editor {

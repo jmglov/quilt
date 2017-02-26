@@ -6,6 +6,9 @@
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
+(defn- clear-code []
+  (rf/dispatch [:clear-code]))
+
 (defn editor []
   (let [code-atom (rf/subscribe [:code])
         editor-atom (rf/subscribe [:editor])

@@ -1,7 +1,9 @@
-(ns quilt.sketch
+(ns quilt.views.sketch
   (:require [clojure.string :as string]
             [quilt.color :refer [->html-color]]
+            [quilt.i18n :as i18n]
             [quilt.util :as util :refer [concatv]]
+            [quilt.views.widgets :as widgets]
             [re-frame.core :as rf]))
 
 (defn- ->num [n]
@@ -105,6 +107,45 @@
 
 (defn create-shapes [code]
   (mapv ->shape code))
+
+(defn- set-sketch-size [sketch-atom width height]
+  (rf/dispatch [:set-sketch-size width height]))
+
+(defn size []
+  (let [sketch-atom (rf/subscribe [:sketch])
+        simple-ui? (rf/subscribe [:simple-ui?])
+        set-size #(set-sketch-size sketch-atom %1 %2)]
+    (fn []
+      (let [[width height] (:size @sketch-atom)]
+        [:div#sketch-options {:style {:min-width "250px"}}
+         [:div.container
+          [:span.label (i18n/str "Drawing size")]
+          (if @simple-ui?
+            [:div (str "[" width " " height "]")]
+            [:div
+             "["
+             (widgets/input-num #(set-size % height)
+                                3 (str width))
+             " "
+             (widgets/input-num #(set-size width %)
+                                3 (str height))
+             "]"])]]))))
+
+(defn mouse-pos []
+  (let [mouse-atom (rf/subscribe [:mouse])
+        sketch-atom (rf/subscribe [:sketch])]
+    (fn []
+      [:div#mouse-pos
+       {:on-click #(rf/dispatch [:lock-mouse-pos])}
+       [:div
+        [:span.label (if (:locked? @mouse-atom)
+                       (i18n/str "Saved position")
+                       (i18n/str "Current position"))]
+        (let [[x y] (:pos @mouse-atom)]
+          [:span (str "[" x " " y "]")])]
+       [:div (if (:locked? @mouse-atom)
+               (i18n/str "Click drawing to show current position")
+               (i18n/str "Click drawing to save current position"))]])))
 
 (defn sketch []
   (let [code-atom (rf/subscribe [:code])

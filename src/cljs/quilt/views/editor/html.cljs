@@ -1,7 +1,7 @@
 (ns quilt.views.editor.html
   (:require [hiccups.runtime]
-            [quilt.sketch :as sketch :refer [sketch]]
             [quilt.util :refer [consv]]
+            [quilt.views.sketch :as sketch]
             [re-frame.core :as rf])
   (:require-macros [hiccups.core :as hiccups]))
 
