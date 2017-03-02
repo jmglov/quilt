@@ -12,6 +12,7 @@
    :pink
    :purple
    :red
+   :white
    :yellow])
 
 (def color
