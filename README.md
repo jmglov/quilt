@@ -12,12 +12,9 @@ http://jmglov.net/quilt/
 
 In no particular order:
 
-* Default to simple mode
 * Read drawing name from query params
-* Add Swedish text
 * Scripted mode for teaching that will show kids where to click, step by step, to make a drawing
 * Cloud load and save so kids can show off their drawings outside of class
-* Give decent error messages when eval fails in the source editor
 * Nicer styling
 * Functional mode
 
