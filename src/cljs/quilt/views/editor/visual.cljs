@@ -7,7 +7,8 @@
             [reagent.core :as r]))
 
 (defn- clear-code []
-  (rf/dispatch [:clear-code]))
+  (when (js/confirm (i18n/str "Really delete all code?"))
+    (rf/dispatch [:clear-code])))
 
 (defn editor []
   (let [code-atom (rf/subscribe [:code])
