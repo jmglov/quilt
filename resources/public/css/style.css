@@ -105,6 +105,10 @@ span.label {
     margin-left: 10px;
 }
 
+#visual-buttons > button {
+    margin-left: 5px;
+}
+
 #clear-code {
     background-color: red;
     margin-left: auto;

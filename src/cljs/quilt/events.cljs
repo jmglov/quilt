@@ -5,10 +5,15 @@
             [quilt.library :as library]
             [re-frame.core :as rf]))
 
-(defn- update-code [db code]
-  (-> db
-      (assoc :code code)
-      (assoc :source (code/forms->str code))))
+(defn- update-code
+  ([db new-code]
+   (update-code db new-code :with-undo))
+  ([{:keys [code undo redo] :as db} new-code with-undo?]
+   (-> db
+       (assoc :code new-code)
+       (assoc :undo (if with-undo? (conj undo code) undo))
+       (assoc :redo (if with-undo? [] redo))
+       (assoc :source (code/forms->str new-code)))))
 
 (rf/reg-event-db
  :initialize-db
@@ -47,8 +52,24 @@
  :eval-code
  (fn [{:keys [source] :as db} [_]]
    (if-let [code (code/read source)]
-     (assoc db :code (code/add-forms [] code))
+     (update-code db (code/add-forms [] code))
      db)))
+
+(rf/reg-event-db
+ :undo
+ (fn [{:keys [code redo undo] :as db} [_]]
+   (-> db
+       (assoc :redo (conj redo code))
+       (assoc :undo (pop undo))
+       (update-code (peek undo) false))))
+
+(rf/reg-event-db
+ :redo
+ (fn [{:keys [code redo undo] :as db} [_]]
+   (-> db
+       (assoc :redo (pop redo))
+       (assoc :undo (conj undo code))
+       (update-code (peek redo) false))))
 
 
 ;; Visual editor

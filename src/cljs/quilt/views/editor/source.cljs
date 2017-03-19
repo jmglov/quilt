@@ -5,6 +5,8 @@
 
 (defn editor []
   (let [code-atom (rf/subscribe [:code])
+        undo-atom (rf/subscribe [:undo])
+        redo-atom (rf/subscribe [:redo])
         editor-atom (rf/subscribe [:editor])
         source-atom (rf/subscribe [:source])
         eval-code #(rf/dispatch [:eval-code])]
@@ -23,4 +25,10 @@
            (i18n/str "Clear")]
           [:button
            {:on-click #(rf/dispatch [:reset-source])}
-           (i18n/str "Reset")]]]))))
+           (i18n/str "Reset")]
+           [:button {:on-click #(rf/dispatch [:undo])
+                     :disabled (empty? @undo-atom)}
+            (i18n/str "Undo")]
+           [:button {:on-click #(rf/dispatch [:redo])
+                     :disabled (empty? @redo-atom)}
+            (i18n/str "Redo")]]]))))

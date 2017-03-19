@@ -12,6 +12,8 @@
 
 (def default-db
   {:code []
+   :undo []
+   :redo []
    :source ""
    :language (keyword (query-param :hl default-language))
    :simple-ui? (not= "false" (query-param :simple default-to-simple-ui?))

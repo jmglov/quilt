@@ -11,6 +11,8 @@
 
 (defn editor []
   (let [code-atom (rf/subscribe [:code])
+        undo-atom (rf/subscribe [:undo])
+        redo-atom (rf/subscribe [:redo])
         editor-atom (rf/subscribe [:editor])
         sketch-atom (rf/subscribe [:sketch])
         new-fun (r/atom (key (first code/functions)))
@@ -32,4 +34,15 @@
             (map (fn [[fun _]] [:option (name fun)])
                  code/functions))
            [:button {:on-click add-code} (i18n/str "Add")]]
-          [:button#clear-code {:on-click clear-code} (i18n/str "Delete all")]]]))))
+
+          [:div#visual-buttons.container
+           [:button {:on-click #(rf/dispatch [:undo])
+                     :disabled (empty? @undo-atom)}
+            (i18n/str "Undo")]
+           [:button {:on-click #(rf/dispatch [:redo])
+                     :disabled (empty? @redo-atom)}
+            (i18n/str "Redo")]]
+
+          [:button#clear-code {:on-click clear-code
+                               :disabled (empty? @code-atom)}
+           (i18n/str "Delete all")]]]))))

@@ -1,7 +1,7 @@
 (ns quilt.views.library
   (:require [quilt.i18n :as i18n]
             [quilt.library :as library]
-            [quilt.util :refer [concatv]]
+            [quilt.util :refer [concatv get-value]]
             [re-frame.core :as rf]
             [reagent.core :as r]))
 
