@@ -159,10 +159,12 @@
 (rf/reg-event-db
  :load-sketch
  (fn [db [_ sketch-name]]
-   (println "Loading sketch:" sketch-name)
-   (-> db
-       (update-code (code/add-forms [] (library/sketches sketch-name)))
-       (assoc-in [:sketch :size] config/default-sketch-size))))
+   (let [forms (if (= :random sketch-name)
+                 (library/random-sketch)
+                 (library/sketches sketch-name))]
+     (-> db
+         (update-code (code/add-forms [] forms))
+         (assoc-in [:sketch :size] config/default-sketch-size)))))
 
 (rf/reg-event-db
  :set-sketch-size
