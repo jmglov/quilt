@@ -13,7 +13,8 @@
        (str (i18n/str "Load drawing") ":")
        (concatv [:select {:value (name @sketch-name)
                           :on-change set-sketch}]
-                (mapv (fn [s] [:option (name s)])
-                      (keys library/sketches)))
+                (-> (mapv (fn [s] [:option (name s)])
+                          (keys library/sketches))
+                    (conj [:option (i18n/str "random")])))
        [:button {:on-click #(rf/dispatch [:load-sketch @sketch-name])}
         (i18n/str "OK")]])))

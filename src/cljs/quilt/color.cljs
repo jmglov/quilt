@@ -1,4 +1,5 @@
-(ns quilt.color)
+(ns quilt.color
+  (:require [clojure.string :as string]))
 
 (def default :black)
 
@@ -172,4 +173,4 @@
            (.toString r 16)
            (.toString g 16)
            (.toString b 16)))
-    (name c)))
+    (string/replace (name c) "-" "")))

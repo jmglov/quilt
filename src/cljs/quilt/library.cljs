@@ -1,5 +1,9 @@
 (ns quilt.library
-  "Built-in library of sketches")
+  "Built-in library of sketches"
+  (:require [cljs.spec :as s]
+            [cljs.spec.impl.gen :as gen]
+            [clojure.test.check.generators]
+            [quilt.spec]))
 
 (def sketches
   {:hello-world [{:fun :text
@@ -60,3 +64,13 @@
           {:fun :triangle
            :color :red
            :position [[220 420] [280 420] [250 500]]}]})
+
+(defn ->vectors [position]
+  (->> position
+       (map #(if (seq? %) (vec %) %))
+       vec))
+
+(defn random-sketch []
+  (->> (gen/generate (s/gen (s/and (s/coll-of :form/form)
+                                   #(> (count %) 5))))
+       (mapv #(update % :position ->vectors))))
