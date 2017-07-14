@@ -13,6 +13,7 @@
 
 #right-pane {
     width: 100%;
+    padding: 0 10px 0 10px;
 }
 
 #left-bottom {
@@ -61,10 +62,6 @@ span.label {
 
 #editor {
     flex-grow: 1;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    padding-left: 10px;
-    padding-right: 10px;
 }
 
 #editor > div {
@@ -156,9 +153,13 @@ span.label {
     margin-left: 10px;
 }
 
+#library {
+    display: flex;
+    justify-content: flex-start;
+}
+
 #library > select {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin: 0 10px 0 10px;
 }
 
 #debug > h2 {

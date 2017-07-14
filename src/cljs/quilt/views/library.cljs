@@ -9,8 +9,8 @@
   (let [sketch-name (r/atom (first (keys library/sketches)))
         set-sketch #(reset! sketch-name (keyword (get-value %)))]
     (fn []
-      [:div#library.container
-       (str (i18n/str "Load drawing") ":")
+      [:div#library
+       [:span (str (i18n/str "Load drawing") ":")]
        (concatv [:select {:value (name @sketch-name)
                           :on-change set-sketch}]
                 (-> (mapv (fn [s] [:option (name s)])

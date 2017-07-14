@@ -152,10 +152,11 @@
     (fn []
       (let [[width height] (:size @sketch-atom)]
         (concatv
-         [:svg#sketch {:width width
-                       :height height
-                       :on-click #(rf/dispatch [:lock-mouse-pos])
-                       :on-mouseMove #(rf/dispatch [:set-mouse-pos
-                                                    (get-mouse-pos %)])}
+         [:svg#sketch.outlined
+          {:width width
+           :height height
+           :on-click #(rf/dispatch [:lock-mouse-pos])
+           :on-mouseMove #(rf/dispatch [:set-mouse-pos
+                                        (get-mouse-pos %)])}
           (make-rectangle [0 0] width height (:bg-color @sketch-atom))]
          (create-shapes @code-atom))))))
