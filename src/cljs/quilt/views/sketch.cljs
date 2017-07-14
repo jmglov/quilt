@@ -117,19 +117,18 @@
         set-size #(set-sketch-size sketch-atom %1 %2)]
     (fn []
       (let [[width height] (:size @sketch-atom)]
-        [:div#sketch-options {:style {:min-width "250px"}}
-         [:div.container
-          [:span.label (i18n/str "Drawing size")]
-          (if @simple-ui?
-            [:div (str "[" width " " height "]")]
-            [:div
-             "["
-             (widgets/input-num #(set-size % height)
-                                3 (str width))
-             " "
-             (widgets/input-num #(set-size width %)
-                                3 (str height))
-             "]"])]]))))
+        [:div#sketch-size
+         [:span.label (i18n/str "Drawing size")]
+         (if @simple-ui?
+           [:div (str "[" width " " height "]")]
+           [:div
+            "["
+            (widgets/input-num #(set-size % height)
+                               3 (str width))
+            " "
+            (widgets/input-num #(set-size width %)
+                               3 (str height))
+            "]"])]))))
 
 (defn mouse-pos []
   (let [mouse-atom (rf/subscribe [:mouse])
@@ -137,12 +136,12 @@
     (fn []
       [:div#mouse-pos
        {:on-click #(rf/dispatch [:lock-mouse-pos])}
-       [:div
+       [:div#position
         [:span.label (if (:locked? @mouse-atom)
                        (i18n/str "Saved position")
                        (i18n/str "Current position"))]
         (let [[x y] (:pos @mouse-atom)]
-          [:span (str "[" x " " y "]")])]
+          [:span (str "[" (int x) " " (int y) "]")])]
        [:div (if (:locked? @mouse-atom)
                (i18n/str "Click drawing to show current position")
                (i18n/str "Click drawing to save current position"))]])))
