@@ -24,19 +24,19 @@
       (when (= :visual (:type @editor-atom))
         [:div#visual-editor
          (concatv [:div#forms.outlined]
-                  (map #(views.code/render % editor-atom @sketch-atom)
-                       @code-atom))
-         [:div#modify-forms.container
-          [:div.outlined
+                  (mapv #(views.code/render % editor-atom @sketch-atom)
+                        @code-atom))
+         [:div#modify-forms
+          [:div#add-form.outlined
            (concatv
             [:select
              {:value (name @new-fun)
-              :on-change #(reset! new-fun (keyword (get-value %)))}]
-            (map (fn [[fun _]] [:option (name fun)])
-                 code/functions))
+              :on-change #(reset! new-fun (keyword (get-value %)))}
+             (map (fn [[fun _]] [:option {:key (name fun)} (name fun)])
+                  code/functions)])
            [:button {:on-click add-code} (i18n/str "Add")]]
 
-          [:div#visual-buttons.container
+          [:div#visual-buttons
            [:button {:on-click #(rf/dispatch [:undo])
                      :disabled (empty? @undo-atom)}
             (i18n/str "Undo")]
@@ -44,6 +44,7 @@
                      :disabled (empty? @redo-atom)}
             (i18n/str "Redo")]]
 
-          [:button#clear-code {:on-click clear-code
-                               :disabled (empty? @code-atom)}
-           (i18n/str "Delete all")]]]))))
+          [:div
+           [:button#clear-code {:on-click clear-code
+                                :disabled (empty? @code-atom)}
+            (i18n/str "Delete all")]]]]))))

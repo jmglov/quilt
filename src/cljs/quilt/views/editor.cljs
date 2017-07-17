@@ -15,7 +15,7 @@
                          (keyword (string/lower-case (get-value %)))])
         simple-ui? (rf/subscribe [:simple-ui?])]
     (fn []
-      [:div#editor-options.container
+      [:div#editor-options
        [:div#editor-type
         (str (i18n/str "Editor") ":")
         [:select {:value (let [type (:type @editor-atom)]
@@ -27,20 +27,21 @@
          [:option {:value "Source"} (i18n/str "Source")]
          [:option {:value "HTML"} (i18n/str "HTML")]
          [:option {:value "Forms"} (i18n/str "Forms")]]]
-       [:div#readonly-toggle
-        {:style (if @simple-ui? {:display "none"} {})}
-        [:input.editor-options-checkbox
-         {:type "checkbox"
-          :checked (:readonly? @editor-atom)
-          :on-change #(rf/dispatch [:toggle-readonly])}]
-        (i18n/str "Read only?")]
-       [:div#debug-toggle
-        {:style (if @simple-ui? {:display "none"} {})}
-        [:input.editor-options-checkbox
-         {:type "checkbox"
-          :checked (:debug? @editor-atom)
-          :on-change #(rf/dispatch [:toggle-debug])}]
-        (i18n/str "Show debug?")]])))
+       [:div#advanced-options
+        [:div#readonly-toggle
+         {:style (if @simple-ui? {:display "none"} {})}
+         [:input.editor-options-checkbox
+          {:type "checkbox"
+           :checked (:readonly? @editor-atom)
+           :on-change #(rf/dispatch [:toggle-readonly])}]
+         (i18n/str "Read only?")]
+        [:div#debug-toggle
+         {:style (if @simple-ui? {:display "none"} {})}
+         [:input.editor-options-checkbox
+          {:type "checkbox"
+           :checked (:debug? @editor-atom)
+           :on-change #(rf/dispatch [:toggle-debug])}]
+         (i18n/str "Show debug?")]]])))
 
 (defn editor []
   (fn []

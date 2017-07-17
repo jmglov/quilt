@@ -24,6 +24,7 @@
 #sketch-controls {
     display: flex;
     justify-content: space-between;
+    padding-top: 5px;
 }
 
 #sketch-size {
@@ -110,23 +111,41 @@ span.label {
     padding-left: 5px;
 }
 
-#modify-forms {
-    margin-top: 10px;
+#visual-editor {
+    display: flex;
+    flex-direction: column;
 }
 
-#modify-forms > .outlined {
-    margin-right: 10px;
+#modify-forms {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
 }
 
 #modify-forms > div {
-    padding: 5px 5px 5px 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-#modify-forms > div > button {
+#add-form {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#add-form > button {
     margin-left: 10px;
 }
 
-#visual-buttons > button {
+#visual-buttons {
+    display: flex;
+}
+
+#visual-buttons > button:first-of-type {
+    margin-right: 5px;
+}
+
+#visual-buttons > button:last-of-type {
     margin-left: 5px;
 }
 
@@ -142,6 +161,16 @@ span.label {
 
 #source-editor > div > button {
     margin-right: 5px;
+}
+
+#editor-options {
+    display: flex;
+    justify-content: space-between;
+}
+
+#advanced-options {
+    display: flex;
+    justify-content: flex-end;
 }
 
 #editor-type > select {
