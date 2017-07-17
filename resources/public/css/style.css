@@ -78,17 +78,25 @@ span.label {
 #forms {
     width: 100%;
     min-height: 1em;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .form {
     padding: 5px 5px 5px 5px;
     cursor: pointer;
+    display: flex;
+}
+
+.number-input {
+    text-align: right;
 }
 
 .drag-handle {
     background-color: DarkGrey;
     margin-right: 5px;
     padding: 0px 5px 0px 5px;
+    max-height: 20px;
 }
 
 .form > button {
@@ -102,7 +110,6 @@ span.label {
 .delete-form {
     color: red;
     margin-left: auto;
-    vertical-align: center;
 }
 
 .docstring {

@@ -28,7 +28,8 @@
 
 (defn- input-num
   [size {:keys [index] :as form} [param & _ :as path]]
-  (input-assoc size form path read-string nil))
+  (-> (input-assoc size form path read-string nil)
+      (assoc-in [1 :class] "number-input")))
 
 (defn- input-text [size form path]
   (input-assoc size form path identity ""))
@@ -107,8 +108,8 @@
     (render-readonly form [:text :size])
     ["["
      (input-num 3 form [:position 0]) " "
-     (input-num 3 form [:position 1]) "] "
-     (input-text 30 form [:text]) " "
+     (input-num 3 form [:position 1]) "] \""
+     (input-text 30 form [:text]) "\" "
      (input-num 2 form [:size]) " "
      (color-picker form)]))
 
@@ -126,7 +127,7 @@
 
 (defn render [{:keys [fun index] :as form} editor-atom sketch]
   (let [{:keys [readonly? selected-index]} @editor-atom
-        css-classes (str "form unselectable container"
+        css-classes (str "form unselectable"
                          (when (= selected-index index) " selected-form"))]
     (concatv
      [:div
