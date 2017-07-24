@@ -16,7 +16,7 @@
          [:textarea {:readOnly (:readonly? @editor-atom)
                      :value @source-atom
                      :on-change #(rf/dispatch [:set-source (get-value %)])}]
-         [:div.container
+         [:div#source-controls
           [:button
            {:on-click eval-code}
            (i18n/str "Eval")]
@@ -26,9 +26,10 @@
           [:button
            {:on-click #(rf/dispatch [:reset-source])}
            (i18n/str "Reset")]
+          [:div
            [:button {:on-click #(rf/dispatch [:undo])
                      :disabled (empty? @undo-atom)}
             (i18n/str "Undo")]
            [:button {:on-click #(rf/dispatch [:redo])
                      :disabled (empty? @redo-atom)}
-            (i18n/str "Redo")]]]))))
+            (i18n/str "Redo")]]]]))))

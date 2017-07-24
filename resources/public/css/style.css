@@ -166,8 +166,9 @@ span.label {
     height: 100px;
 }
 
-#source-editor > div > button {
-    margin-right: 5px;
+#source-controls {
+    display: flex;
+    justify-content: space-between;
 }
 
 #editor-options {
