@@ -3,15 +3,16 @@
   :url "http://jmglov.net/quilt/"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.293"]
+  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
+                 [org.clojure/clojurescript "1.9.854"]
+                 [org.clojure/core.async "0.3.443"]
                  [org.clojure/test.check "0.9.0"]
                  [com.cemerick/url "0.1.1"]
                  [hiccups "0.3.0"]
-                 [re-frame "0.9.0"]
-                 [reagent "0.6.0"]]
+                 [re-frame "0.9.4"]
+                 [reagent "0.7.0"]]
 
-  :plugins [[lein-cljsbuild "1.1.4"]]
+  :plugins [[lein-cljsbuild "1.1.6"]]
 
   :min-lein-version "2.7.1"
 

@@ -1,5 +1,5 @@
 (ns quilt.spec
-  (:require [cljs.spec :as s]
+  (:require [cljs.spec.alpha :as s]
             [quilt.color :as color]
             [quilt.config :as config]))
 

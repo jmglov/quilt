@@ -1,7 +1,7 @@
 (ns quilt.library
   "Built-in library of sketches"
-  (:require [cljs.spec :as s]
-            [cljs.spec.impl.gen :as gen]
+  (:require [cljs.spec.alpha :as s]
+            [cljs.spec.gen.alpha :as gen]
             [clojure.test.check.generators]
             [quilt.spec]))
 
